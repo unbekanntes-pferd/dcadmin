@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Tab, TabGroup } from '@skeletonlabs/skeleton';
+	import { Tab, TabAnchor, TabGroup } from '@skeletonlabs/skeleton';
 	import UserPermissions from '../../components/UserPermissions.svelte';
 	import UsersIcon from '~icons/mdi/users';
 	import RoomsIcon from '~icons/mdi/folder-account-outline';
@@ -17,7 +17,7 @@
 			</Tab>
 		{/if}
 		{#if $userAccount && $userAccount.isRoomManager}
-			<Tab bind:group={tabSet} name="rooms" value={1} disabled>
+			<Tab bind:group={tabSet} name="nodes" value={1}>
 				<svelte:fragment slot="lead"><RoomsIcon /></svelte:fragment>
 				<span>Rooms</span>
 			</Tab>

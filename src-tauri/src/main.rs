@@ -1,6 +1,7 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+use config::setup_logging;
 use models::AppState;
 
 mod auth;
@@ -12,7 +13,7 @@ mod permissions;
 mod users;
 
 fn main() {
-    dotenvy::dotenv().expect(".env file is mandatory - not found");
+    setup_logging();
 
     tauri::Builder::default()
         .manage(AppState::default())

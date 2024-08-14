@@ -7,7 +7,7 @@
 	} from '@skeletonlabs/skeleton';
 	import UserSearch from './UserSearch.svelte';
 	import UserIcon from '~icons/mdi/account-filter';
-	import type { NodePermissionsList } from '$lib/permissions/models';
+	import type { NodePermissionsListEntry } from '$lib/permissions/models';
 	import {
 		downloadAllUserPermissions,
 		downloadUserPermissions,
@@ -26,7 +26,7 @@
 	let downloading = false;
 	let userResetFilter: () => void;
 	let userFilter: number | undefined = undefined;
-	let nodePermissions: NodePermissionsList[] | undefined = undefined;
+	let nodePermissions: NodePermissionsListEntry[] | undefined = undefined;
 
 	let todayStr = new Date().toLocaleDateString('en-CA');
 

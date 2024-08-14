@@ -1,9 +1,9 @@
 [package]
 name = "app"
 version = "0.1.0"
-description = "A Tauri App"
-authors = ["you"]
-license = ""
+description = "DCAdmin - desktop client to manage DRACOON"
+authors = ["Octavio Simone"]
+license = "https://github.com/unbekanntes-pferd/dcadmin"
 repository = ""
 default-run = "app"
 edition = "2021"
@@ -12,7 +12,7 @@ rust-version = "1.60"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [build-dependencies]
-tauri-build = { version = "1.5.2", features = [] }
+tauri-build = { version = "1.5", features = [] }
 
 [dependencies]
 serde_json = "1.0"
@@ -23,7 +23,9 @@ open = "5"
 chrono = "0.4.38"
 keyring = {version = "2" }
 csv = "1"
-dotenvy ="0.15"
+tracing = "0.1"
+tracing-subscriber = "0.3"
+tracing-log = "0.2"
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem and the built-in dev server is disabled.

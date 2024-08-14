@@ -1,9 +1,9 @@
 <script lang="ts">
-	import type { NodePermissions, NodePermissionsList } from '$lib/permissions/models';
+	import type { NodePermissions, NodePermissionsListEntry } from '$lib/permissions/models';
 	import { toReadableSize } from '$lib/utils';
 	import { popup, type PopupSettings } from '@skeletonlabs/skeleton';
 
-	export let permissionsList: NodePermissionsList[];
+	export let permissionsList: NodePermissionsListEntry[];
 
 	enum PermissionsTemplate {
 		RoomAdministator = 'Room Administrator',
@@ -61,7 +61,7 @@
 		} as PopupSettings;
 	});
 
-	const getPopupTarget: (row: NodePermissionsList) => string = (row) => {
+	const getPopupTarget: (row: NodePermissionsListEntry) => string = (row) => {
 		return `${row.nodeId}-${row.userPermissions[0].userId}`;
 	};
 

@@ -1,11 +1,10 @@
 import type { ListParams } from "$lib/models";
 import { invoke } from "@tauri-apps/api";
-import type { NodePermissionsList } from "./models";
+import type { NodePermissionsListEntry } from "./models";
 
 export const getPermissions = async (params: ListParams) => {
     try {
-        let permissionsList: NodePermissionsList[] = await invoke('get_permissions', { params });
-        console.log(permissionsList);
+        let permissionsList: NodePermissionsListEntry[] = await invoke('get_permissions', { params });
         return permissionsList;
     }
     catch (error) {

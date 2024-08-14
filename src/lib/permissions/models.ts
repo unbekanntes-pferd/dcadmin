@@ -1,4 +1,4 @@
-export interface NodePermissionsList {
+export interface NodePermissionsListEntry {
     nodeId: number;
     nodeName: string;
     nodeParentPath: string;
@@ -37,4 +37,46 @@ export interface NodePermissions {
     readRecycleBin: boolean;
     restoreRecycleBin: boolean;
     deleteRecycleBin: boolean;
+}
+
+export interface NodeInfo {
+    id: number;
+    name: string;
+    parentPath: string;
+    cntChildren: number;
+    parentId?: number;
+    size?: number;
+    recycleBinRetentionPeriod?: number;
+    quota?: number;
+    isEncrypted?: boolean;
+    hasActivitiesLog?: boolean;
+    createdAt?: string;
+    updatedAt?: string;
+    createdBy?: string;
+    updatedBy?: string;
+    createdById?: number;
+    updatedById?: number;
+    cntPermissions?: number;
+}
+
+export const intoNodeInfo = (entry: NodePermissionsListEntry): NodeInfo => {
+    return {
+        id: entry.nodeId,
+        name: entry.nodeName,
+        parentPath: entry.nodeParentPath,
+        cntChildren: entry.nodeCntChildren,
+        parentId: entry.nodeParentId,
+        size: entry.nodeSize,
+        recycleBinRetentionPeriod: entry.nodeRecycleBinRetentionPeriod,
+        quota: entry.nodeQuota,
+        isEncrypted: entry.nodeIsEncrypted,
+        hasActivitiesLog: entry.nodeHasActivitiesLog,
+        createdAt: entry.nodeCreatedAt,
+        updatedAt: entry.nodeUpdatedAt,
+        createdBy: entry.nodeCreatedBy,
+        updatedBy: entry.nodeUpdatedBy,
+        createdById: entry.nodeCreatedById,
+        updatedById: entry.nodeUpdatedById,
+        cntPermissions: entry.userPermissions ? entry.userPermissions.length : 0
+    }
 }
