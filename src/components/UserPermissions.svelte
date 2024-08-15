@@ -111,6 +111,13 @@
 
 		downloading = false;
 	};
+
+	const resetFilter = () => {
+		userResetFilter();
+		userFilter = undefined;
+		nodePermissions = undefined;
+	};
+	
 </script>
 
 <div class="flex flex-col w-full p-4">
@@ -129,7 +136,7 @@
 					<button
 						type="button"
 						class="btn variant-outline-warning my-2 w-24"
-						on:click={userResetFilter}
+						on:click={resetFilter}
 					>
 						<span><CancelIcon /></span>
 						<span>Reset</span>

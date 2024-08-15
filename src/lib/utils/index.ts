@@ -48,10 +48,11 @@ export const createToastSettings = (message: string, toastType: ToastType, timeo
     }
 }
 
-export const handleNodeNavigation = (id: number, permissions?: boolean) => {
+export const handleNodeNavigation = async (id: number, permissions?: boolean) => {
+    console.log(permissions, id);
     if (permissions) {
-        goto(`/nodes/${id}/permissions`);
+        await goto(`/nodes/${id}/permissions`);
         return;
     }
-    goto(`/nodes/${id}`);
+    await goto(`/nodes/${id}`);
 };

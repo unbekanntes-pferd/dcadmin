@@ -4,6 +4,7 @@
 	import { intoNodeInfo, type NodeInfo } from '$lib/permissions/models';
 	import { getToastStore } from '@skeletonlabs/skeleton';
 	import NodeView from '../../../components/NodeView.svelte';
+	import Spinner from '../../../components/Spinner.svelte';
 	import { createToastSettings } from '$lib/utils';
 	import { ToastType } from '$lib/models';
 
@@ -35,10 +36,14 @@
 			toastStore.trigger(errorToast);
 		}
 
-        return [];
+		return [];
 	};
 </script>
 
 {#if nodes.length > 0}
-	<NodeView {nodes}  />
+	<NodeView {nodes} />
+{:else}
+	<div class="flex justify-center w-full h-full">
+		<Spinner width={100} height={100} />
+	</div>
 {/if}

@@ -26,13 +26,11 @@
 	$: if (paginationSettings.page * paginationSettings.limit >= nodes.length) {
 		paginationSettings.page = 0;
 	}
-
-
 </script>
 
 <div class="overflow-x-auto space-y-2 h-full w-4/5 ml-4 mt-4">
 	{#if $page.url.pathname !== '/nodes/0'}
-        <NodeBackButton />
+		<NodeBackButton />
 	{/if}
 
 	<Paginator
@@ -55,19 +53,23 @@
 			<tbody>
 				{#each paginatedNodes as row}
 					<tr>
-						<td>
+						<td class="w-max">
 							{#if row.cntChildren > 0}
 								<button on:click={() => handleNodeNavigation(row.id)}>
-									<span class="mr-2"><RoomIcon /></span>
-									<span>
-										{row.name}
-									</span>
+									<div class="flex flex-row">
+										<span class="mr-2"><RoomIcon /></span>
+										<span>
+											{row.name}
+										</span>
+									</div>
 								</button>
 							{:else}
-								<span class="text-gray-500"><RoomIcon /></span>
-								<span class="text-gray-500">
-									{row.name}
-								</span>
+								<div class="flex flex-row">
+									<span class="text-gray-500 mr-2"><RoomIcon /></span>
+									<span class="text-gray-500">
+										{row.name}
+									</span>
+								</div>
 							{/if}
 						</td>
 						<td>{row.parentPath}</td>

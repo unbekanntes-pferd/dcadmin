@@ -21,6 +21,10 @@
 		goto('/');
 	}
 
+	$: {
+		console.log($page.url.pathname);
+	}
+
 	const handleLogout = () => {
 		logout();
 		goto('/');
