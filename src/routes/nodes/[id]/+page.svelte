@@ -11,7 +11,6 @@
 	const toastStore = getToastStore();
 
 	$: {
-        console.log($page.params.id);
 		const parentId = parseInt($page.params.id, 10);
 		fetchNodeInfo(parentId)
 			.then((result) => {
@@ -41,5 +40,5 @@
 </script>
 
 {#if nodes.length > 0}
-	<NodeView {nodes} parentId={parseInt($page.params.id)} />
+	<NodeView {nodes}  />
 {/if}

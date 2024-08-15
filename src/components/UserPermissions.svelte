@@ -117,7 +117,7 @@
 	<Accordion>
 		<AccordionItem open>
 			<svelte:fragment slot="lead"><UserIcon /></svelte:fragment>
-			<svelte:fragment slot="summary">User options</svelte:fragment>
+			<svelte:fragment slot="summary">User permissions</svelte:fragment>
 			<svelte:fragment slot="content">
 				<UserSearch
 					{onUserSelection}
@@ -128,7 +128,7 @@
 				<div class="flex flex-row justify-between mt-4">
 					<button
 						type="button"
-						class="btn variant-filled-warning my-2 w-24"
+						class="btn variant-outline-warning my-2 w-24"
 						on:click={userResetFilter}
 					>
 						<span><CancelIcon /></span>

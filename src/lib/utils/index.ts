@@ -1,3 +1,4 @@
+import { goto } from "$app/navigation";
 import type { ToastType } from "$lib/models";
 import type { ToastSettings } from "@skeletonlabs/skeleton";
 
@@ -46,3 +47,11 @@ export const createToastSettings = (message: string, toastType: ToastType, timeo
         autohide: true
     }
 }
+
+export const handleNodeNavigation = (id: number, permissions?: boolean) => {
+    if (permissions) {
+        goto(`/nodes/${id}/permissions`);
+        return;
+    }
+    goto(`/nodes/${id}`);
+};

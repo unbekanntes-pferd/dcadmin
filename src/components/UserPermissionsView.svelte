@@ -1,57 +1,12 @@
 <script lang="ts">
+	import { displayPermissionsTemplate, PermissionsTemplate } from '$lib/permissions';
 	import type { NodePermissions, NodePermissionsListEntry } from '$lib/permissions/models';
 	import { toReadableSize } from '$lib/utils';
 	import { popup, type PopupSettings } from '@skeletonlabs/skeleton';
 
 	export let permissionsList: NodePermissionsListEntry[];
 
-	enum PermissionsTemplate {
-		RoomAdministator = 'Room Administrator',
-		Edit = 'Edit',
-		Read = 'Read',
-		Custom = 'Custom',
-		None = 'None'
-	}
 
-	const displayPermissionsTemplate = (perms: NodePermissions): PermissionsTemplate => {
-		if (!perms) {
-			return PermissionsTemplate.None;
-		}
-
-		if (
-			perms.manage &&
-			perms.read &&
-			perms.change &&
-			perms.delete &&
-			perms.create &&
-			perms.manageDownloadShare &&
-			perms.manageUploadShare &&
-			perms.readRecycleBin &&
-			perms.restoreRecycleBin &&
-			perms.deleteRecycleBin
-		) {
-			return PermissionsTemplate.RoomAdministator;
-		}
-
-		if (
-			perms.read &&
-			perms.change &&
-			perms.delete &&
-			perms.create &&
-			perms.manageDownloadShare &&
-			perms.manageUploadShare &&
-			perms.readRecycleBin &&
-			perms.restoreRecycleBin
-		) {
-			return PermissionsTemplate.Edit;
-		}
-
-		if (perms.read && perms.manageDownloadShare) {
-			return PermissionsTemplate.Read;
-		}
-
-		return PermissionsTemplate.Custom;
-	};
 
 	$: popupSettings = permissionsList.map((permissions) => {
 		return {

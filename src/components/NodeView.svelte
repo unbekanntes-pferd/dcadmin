@@ -1,23 +1,19 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import type { NodeInfo } from '$lib/permissions/models';
-	import { toReadableSize } from '$lib/utils';
+	import { handleNodeNavigation, toReadableSize } from '$lib/utils';
 	import { Paginator, type PaginationSettings } from '@skeletonlabs/skeleton';
 	import RoomIcon from '~icons/mdi/folder-account';
+	import UsersIcon from '~icons/mdi/users';
+	import { page } from '$app/stores';
+	import NodeBackButton from './NodeBackButton.svelte';
 
 	export let nodes: NodeInfo[];
-	export let parentId: number;
 
 	$: paginatedNodes = nodes.slice(
 		paginationSettings.page * paginationSettings.limit,
 		paginationSettings.page * paginationSettings.limit + paginationSettings.limit
 	);
-
-	const handleNodeNavigation = (id: number) => {
-		console.log(id);
-		console.log(parentId);
-		goto(`/nodes/${id}`);
-	};
 
 	let paginationSettings = {
 		page: 0,
@@ -31,15 +27,14 @@
 		paginationSettings.page = 0;
 	}
 
+
 </script>
 
 <div class="overflow-x-auto space-y-2 h-full w-4/5 ml-4 mt-4">
-	{#if parentId}
-		<button on:click={() => handleNodeNavigation(parentId)}>
-			<span><RoomIcon /></span>
-			<span>Back</span>
-		</button>
+	{#if $page.url.pathname !== '/nodes/0'}
+        <NodeBackButton />
 	{/if}
+
 	<Paginator
 		bind:settings={paginationSettings}
 		showFirstLastButtons={false}
@@ -63,7 +58,7 @@
 						<td>
 							{#if row.cntChildren > 0}
 								<button on:click={() => handleNodeNavigation(row.id)}>
-									<span><RoomIcon /></span>
+									<span class="mr-2"><RoomIcon /></span>
 									<span>
 										{row.name}
 									</span>
@@ -80,7 +75,12 @@
 						<td>{row.quota ? toReadableSize(row.quota) : 'N/A'}</td>
 						<td>{row.isEncrypted ? '✅️' : '❌'}</td>
 						<td>
-							{row.cntPermissions}
+							<button on:click={() => handleNodeNavigation(row.id, true)}>
+								<span><UsersIcon /></span>
+								<span>
+									{row.cntPermissions}
+								</span>
+							</button>
 						</td>
 					</tr>
 				{/each}

@@ -218,7 +218,7 @@
 						<div class="flex flex-row justify-between mt-4">
 							<button
 								type="button"
-								class="btn variant-filled-warning my-2 w-24"
+								class="btn variant-outline-warning my-2 w-24"
 								on:click={resetFilters}
 							>
 								<span><CancelIcon /></span>

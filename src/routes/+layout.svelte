@@ -12,7 +12,7 @@
 	import HomeIcon from '~icons/mdi/home';
 	import NodesIcon from '~icons/mdi/folder-account';
 	import { goto } from '$app/navigation';
-	import { initializeStores, Toast, TabAnchor, TabGroup } from '@skeletonlabs/skeleton';
+	import { initializeStores, Toast } from '@skeletonlabs/skeleton';
 
 	initializeStores();
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
@@ -42,20 +42,14 @@
 						<svelte:fragment slot="lead"><EventsIcon /></svelte:fragment>
 						<div class="flex flex-col text-xs">Events</div>
 					</AppRailAnchor>
-					<AppRailAnchor
-						href="/users"
-						selected={$page.url.pathname === '/users'}
-					>
+					<AppRailAnchor href="/users" selected={$page.url.pathname === '/users'}>
 						<svelte:fragment slot="lead"><PermissionsIcon /></svelte:fragment>
 						<div class="flex flex-col text-xs">Users</div>
 					</AppRailAnchor>
-					<AppRailAnchor
-					href="/nodes/0"
-					selected={$page.url.pathname.startsWith('/nodes')}
-				>
-					<svelte:fragment slot="lead"><NodesIcon /></svelte:fragment>
-					<div class="flex flex-col text-xs">Nodes</div>
-				</AppRailAnchor>
+					<AppRailAnchor href="/nodes/0" selected={$page.url.pathname.startsWith('/nodes')}>
+						<svelte:fragment slot="lead"><NodesIcon /></svelte:fragment>
+						<div class="flex flex-col text-xs">Nodes</div>
+					</AppRailAnchor>
 				{/if}
 				<svelte:fragment slot="trail">
 					<AppRailAnchor on:click={handleLogout}>
