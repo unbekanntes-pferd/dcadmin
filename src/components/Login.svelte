@@ -96,6 +96,6 @@
 		/>
 
 		<button class="btn variant-filled-primary" on:click={finalizeLogin}> Enter code </button>
-		<button class="btn variant-filled-warning" on:click={handleCancel}> Cancel </button>
+		<button class="btn variant-outline-warning" on:click={handleCancel}> Cancel </button>
 	</div>
 {/if}

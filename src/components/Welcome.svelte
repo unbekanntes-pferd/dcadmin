@@ -45,52 +45,63 @@
 {/each}
 
 <div class="card p-4 w-full m-4">
-	<header class="card-header">
-		<div class="my-2">
-			<b>Welcome, {firstName}.</b>
-		</div>
-		<div class="flex flex-row">
-			{#if isConfigManager}
-				<div use:popup={popupSettings[0]}>
-					<SettingsIcon class="text-green-300 mx-1" />
+	<div class="flex flex-row justify-between items-center">
+		<div>
+			<header class="card-header">
+				<div class="my-2">
+					<b>Welcome, {firstName}.</b>
 				</div>
-			{/if}
-			{#if isRoomManager}
-				<div use:popup={popupSettings[1]}>
-					<RoomsConfigIcon class="text-green-300 mx-1" />
+				<div class="flex flex-row">
+					{#if isConfigManager}
+						<div use:popup={popupSettings[0]}>
+							<SettingsIcon class="text-green-300 mx-1" />
+						</div>
+					{/if}
+					{#if isRoomManager}
+						<div use:popup={popupSettings[1]}>
+							<RoomsConfigIcon class="text-green-300 mx-1" />
+						</div>
+					{/if}
+					{#if isUserManager}
+						<div use:popup={popupSettings[2]}>
+							<UserIcon class="text-green-300 mx-1" />
+						</div>
+					{/if}
+					{#if isGroupManager}
+						<div use:popup={popupSettings[3]}><GroupIcon class="text-green-300 mx-1" /></div>
+					{/if}
+					{#if isAuditor}
+						<div use:popup={popupSettings[4]}>
+							<AuditorIcon class="text-green-300 mx-1" />
+						</div>
+					{/if}
 				</div>
-			{/if}
-			{#if isUserManager}
-				<div use:popup={popupSettings[2]}>
-					<UserIcon class="text-green-300 mx-1" />
-				</div>
-			{/if}
-			{#if isGroupManager}
-				<div use:popup={popupSettings[3]}><GroupIcon class="text-green-300 mx-1" /></div>
-			{/if}
-			{#if isAuditor}
-				<div use:popup={popupSettings[4]}>
-					
-					<AuditorIcon class="text-green-300 mx-1" />
-				</div>
-			{/if}
-		</div>
-	</header>
-	<div class="p-4">
-		{#await getCustomerInfo()}
-			<p>Loading...</p>
-		{:then customerInfo}
-			<div class="flex flex-row">
-                <UsersIcon class="mx-2"/>
-				<p>{customerInfo.userCount} / {customerInfo.userLimit}</p>
-			</div>
+			</header>
 
-			<div class="flex flex-row">
-                <SpaceIcon class="mx-2"/>
-				<p>{toReadableSize(customerInfo.spaceUsed)} / {toReadableSize(customerInfo.spaceLimit)}</p>
+			<div class="flex flex-row justify-between">
+				<div class="p-4">
+					{#await getCustomerInfo()}
+						<p>Loading...</p>
+					{:then customerInfo}
+						<div class="flex flex-row">
+							<UsersIcon class="mx-2" />
+							<p>{customerInfo.userCount} | {customerInfo.userLimit}</p>
+						</div>
+
+						<div class="flex flex-row">
+							<SpaceIcon class="mx-2" />
+							<p>
+								{toReadableSize(customerInfo.spaceUsed)} | {toReadableSize(customerInfo.spaceLimit)}
+							</p>
+						</div>
+					{:catch error}
+						<p style="color: red">{error.message}</p>
+					{/await}
+				</div>
 			</div>
-		{:catch error}
-			<p style="color: red">{error.message}</p>
-		{/await}
+		</div>
+		<div>
+			<img src="/dcadmin_logo.png" alt="dcadmin logo" width="200" height="200" />
+		</div>
 	</div>
 </div>
