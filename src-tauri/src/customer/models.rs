@@ -1,7 +1,7 @@
 use dco3::user::CustomerData;
 use serde::Serialize;
 
-#[derive(Serialize)]
+#[derive(Serialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct SerializedCustomerInfo {
     pub space_limit: u64,

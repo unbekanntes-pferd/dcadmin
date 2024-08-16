@@ -1,6 +1,8 @@
+use std::sync::Arc;
+
 use crate::AppState;
 use dco3::User;
-use models::SerializedCustomerInfo;
+pub use models::SerializedCustomerInfo;
 use tauri::State;
 
 mod models;
@@ -11,10 +13,27 @@ pub async fn get_customer_info(
 ) -> Result<SerializedCustomerInfo, String> {
     let client = state.get_client().await?;
 
-    Ok(client
+    if let Some(info) = state
+        .get_customer_cache()
+        .get(&client.get_base_url().to_string())
+        .await
+    {
+        return Ok((*info).clone());
+    }
+
+    let info = client
         .user
         .get_customer_info()
         .await
-        .map_err(|e| e.to_string())?
-        .into())
+        .map_err(|e| e.to_string())?;
+
+    let serializable_info: SerializedCustomerInfo = info.into();
+    let serializable_info = Arc::new(serializable_info);
+
+    state
+        .get_customer_cache()
+        .insert(client.get_base_url().to_string(), serializable_info.clone())
+        .await;
+
+    Ok((*serializable_info).clone())
 }

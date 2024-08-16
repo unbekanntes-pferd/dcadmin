@@ -37,9 +37,10 @@ pub fn setup_logging() {
 }
 
 pub fn setup_cache<K: Hash + Eq + Send + Sync + 'static, V: Clone + Send + Sync + 'static>(
+    ttl: Option<Duration>,
 ) -> Cache<K, V> {
     Cache::builder()
-        .time_to_live(Duration::from_secs(CACHE_TTL))
+        .time_to_live(ttl.unwrap_or(Duration::from_secs(CACHE_TTL)))
         .max_capacity(CACHE_MAX_CAPACITY)
         .build()
 }

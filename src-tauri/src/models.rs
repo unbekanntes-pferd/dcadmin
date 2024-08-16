@@ -1,4 +1,4 @@
-use std::sync::Arc;
+use std::{sync::Arc, time::Duration};
 
 use dco3::{
     auth::{Connected, Disconnected},
@@ -13,6 +13,7 @@ use tauri::async_runtime::RwLock;
 
 use crate::{
     config::setup_cache,
+    customer::SerializedCustomerInfo,
     permissions::{PermissionsCacheKey, SerializedNodePermissionsList},
 };
 
@@ -33,6 +34,7 @@ pub struct AppState {
     app_auth: Arc<RwLock<AppAuth>>,
     entry: Arc<RwLock<Option<Entry>>>,
     permissions_cache: Cache<PermissionsCacheKey, Arc<SerializedNodePermissionsList>>,
+    customer_cache: Cache<String, Arc<SerializedCustomerInfo>>,
 }
 
 pub enum WrappedClient {
@@ -47,7 +49,8 @@ impl Default for AppState {
             client: Arc::new(RwLock::new(WrappedClient::Unset)),
             app_auth: Arc::new(RwLock::new(AppAuth::Unset)),
             entry: Arc::new(RwLock::new(None)),
-            permissions_cache: setup_cache(),
+            permissions_cache: setup_cache(None),
+            customer_cache: setup_cache(Some(Duration::from_secs(30 * 60))),
         }
     }
 }
@@ -220,8 +223,12 @@ impl AppState {
         Ok(client)
     }
 
-    pub fn get_cache(&self) -> &Cache<PermissionsCacheKey, Arc<SerializedNodePermissionsList>> {
+    pub fn get_permissions_cache(&self) -> &Cache<PermissionsCacheKey, Arc<SerializedNodePermissionsList>> {
         &self.permissions_cache
+    }
+
+    pub fn get_customer_cache(&self) -> &Cache<String, Arc<SerializedCustomerInfo>> {
+        &self.customer_cache
     }
 }
 

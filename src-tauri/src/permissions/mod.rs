@@ -19,7 +19,7 @@ pub async fn get_permissions(
     let url = client.get_base_url().to_string();
     let key = PermissionsCacheKey::new(url, params.clone());
 
-    if let Some(permissions) = state.get_cache().get(&key).await {
+    if let Some(permissions) = state.get_permissions_cache().get(&key).await {
         return Ok((*permissions).clone());
     }
 
@@ -34,7 +34,7 @@ pub async fn get_permissions(
     let serializable_permissions = Arc::new(serializable_permissions);
 
     state
-        .get_cache()
+        .get_permissions_cache()
         .insert(key, serializable_permissions.clone())
         .await;
     Ok((*serializable_permissions).clone())
@@ -52,7 +52,7 @@ pub async fn export_user_permissions(
     let url = client.get_base_url().to_string();
     let key = PermissionsCacheKey::new(url, params.clone());
 
-    let serializable_permissions = if let Some(permissions) = state.get_cache().get(&key).await {
+    let serializable_permissions = if let Some(permissions) = state.get_permissions_cache().get(&key).await {
         (*permissions).clone()
     } else {
         let fetched_permissions = client

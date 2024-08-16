@@ -23,7 +23,7 @@ open = "5"
 chrono = "0.4.38"
 keyring = {version = "2" }
 csv = "1"
-moka = {version = "0.12", features = ["future"]}
+moka = {version = "0.12", features = ["future"] }
 
 # tracing
 tracing = "0.1"
