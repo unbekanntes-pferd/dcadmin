@@ -11,9 +11,7 @@ pub async fn get_users(
     params: ListParams,
 ) -> Result<SerializedUserList, String> {
     let client = state.get_client().await?;
-    eprintln!("params: {:?}", params);
     let params = params.try_into()?;
-    eprintln!("params: {:?}", params);
 
     Ok(client
         .users
