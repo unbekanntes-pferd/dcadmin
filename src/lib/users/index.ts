@@ -13,3 +13,13 @@ export const getUsers = async (params: ListParams): Promise<UserList> => {
         throw error;
     }
 }
+
+export const downloadUsers = async (params: ListParams, path: string): Promise<void> => {
+    try {
+        await invoke('export_users', { params, path });
+    }
+    catch (error) {
+        console.error(error);
+        throw error;
+    }
+}

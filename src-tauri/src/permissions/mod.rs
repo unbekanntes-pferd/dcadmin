@@ -78,6 +78,8 @@ pub async fn export_user_permissions(
         csv_writer.serialize(event).map_err(|e| e.to_string())?;
     }
 
+    csv_writer.flush().map_err(|e| e.to_string())?;
+
     Ok(())
 }
 
@@ -146,6 +148,8 @@ pub async fn export_all_user_permissions(
     for event in flattened_permissions {
         csv_writer.serialize(event).map_err(|e| e.to_string())?;
     }
+
+    csv_writer.flush().map_err(|e| e.to_string())?;
 
     Ok(())
 }

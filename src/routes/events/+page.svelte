@@ -23,12 +23,13 @@
 	const toastStore = getToastStore();
 
 	let eventList: EventList | null;
-	let operations: OperationTypeList | null;
+	let operationList: OperationTypeList | null;
 	let operationFilter: number | null = null;
 	let userFilter: number | undefined = undefined;
 	let userResetFilter: () => void;
 
 	let toDate = new Date();
+	toDate.setDate(toDate.getDate() + 1);
 	let fromDate = new Date(toDate);
 	fromDate.setDate(fromDate.getDate() - 7);
 
@@ -147,14 +148,14 @@
 	};
 
 	onMount(async () => {
-		operations = await getOperationTypes();
+		operationList = await getOperationTypes();
 		await fetchEvents();
 	});
 </script>
 
 <div class="flex flex-col w-full p-4">
 	<Accordion>
-		<AccordionItem>
+		<AccordionItem open>
 			<svelte:fragment slot="lead"><CalenderFilterIcon /></svelte:fragment>
 			<svelte:fragment slot="summary">Event options</svelte:fragment>
 			<svelte:fragment slot="content">
@@ -168,7 +169,7 @@
 						<div class="flex flex-row w-full">
 							<div class="flex flex-col w-1/2">
 								<div class="flex flex-col w-fit">
-									{#if operations && operations.operations}
+									{#if operationList && operationList.operations}
 										<label for="operation-filter">Actions</label>
 										<select
 											id="operation-filter"
@@ -177,7 +178,7 @@
 											bind:value={operationFilter}
 											on:change={fetchEvents}
 										>
-											{#each operations.operations as operation}
+											{#each operationList.operations as operation}
 												<option value={operation.id}>{operation.name}</option>
 											{/each}
 										</select>
@@ -245,7 +246,7 @@
 	</Accordion>
 	{#if loading}
 		<div class="flex justify-center items-center">
-			<div class="spinner"></div>
+			<Spinner width={100} height={100} />
 		</div>
 	{:else if eventList}
 		<div class="my-4">

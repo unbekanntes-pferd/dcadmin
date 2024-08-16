@@ -46,15 +46,17 @@
 						<svelte:fragment slot="lead"><EventsIcon /></svelte:fragment>
 						<div class="flex flex-col text-xs">Events</div>
 					</AppRailAnchor>
+					{/if}
 					<AppRailAnchor href="/users" selected={$page.url.pathname === '/users'}>
 						<svelte:fragment slot="lead"><PermissionsIcon /></svelte:fragment>
 						<div class="flex flex-col text-xs">Users</div>
 					</AppRailAnchor>
+					{#if !$userAccount.isCloud}
 					<AppRailAnchor href="/nodes/0" selected={$page.url.pathname.startsWith('/nodes')}>
 						<svelte:fragment slot="lead"><NodesIcon /></svelte:fragment>
 						<div class="flex flex-col text-xs">Nodes</div>
 					</AppRailAnchor>
-				{/if}
+					{/if}
 				<svelte:fragment slot="trail">
 					<AppRailAnchor on:click={handleLogout}>
 						<svelte:fragment slot="lead"><LogoutIcon /></svelte:fragment>
