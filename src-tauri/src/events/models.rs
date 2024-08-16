@@ -1,4 +1,5 @@
 use chrono::{DateTime, Utc};
+use std::hash::Hash;
 use dco3::eventlog::{
     EventStatus, EventlogParams, LogEvent, LogEventList, LogOperation, LogOperationList,
 };
@@ -6,14 +7,42 @@ use serde::{Deserialize, Serialize};
 
 use crate::models::Range;
 
-#[derive(Serialize)]
+#[derive(PartialEq, Eq)]
+pub struct EventsCacheKey {
+    url: String,
+    params: EventListParams
+}
+
+impl EventsCacheKey {
+    pub fn new(url: String, params: EventListParams) -> Self {
+        Self {
+            url,
+            params
+        }
+    }
+}
+
+impl From<&EventsCacheKey> for String {
+    fn from(value: &EventsCacheKey) -> Self {
+        format!("{}{}", value.url, value.params.to_string())
+    }
+}
+
+impl Hash for EventsCacheKey {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        let key: String = self.into();
+        key.hash(state);
+    }
+}
+
+#[derive(Serialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct SerializedEventList {
     pub range: Range,
     pub events: Vec<SerializedEvent>,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct SerializedEvent {
     time: DateTime<Utc>,
@@ -36,7 +65,7 @@ pub struct SerializedEvent {
     attribute3: Option<String>,
 }
 
-#[derive(Deserialize, Clone)]
+#[derive(Deserialize, Clone, PartialEq, Eq, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct EventListParams {
     pub offset: Option<u64>,
@@ -47,6 +76,15 @@ pub struct EventListParams {
     pub to_date: Option<String>,
     pub status: Option<u8>,
 }
+
+impl EventListParams {
+    pub fn to_string(&self) -> String {
+        serde_json::to_string(self).unwrap_or_default()
+    }
+    
+}
+
+
 
 impl TryFrom<EventListParams> for EventlogParams {
     type Error = String;

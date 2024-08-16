@@ -14,6 +14,7 @@ use tauri::async_runtime::RwLock;
 use crate::{
     config::setup_cache,
     customer::SerializedCustomerInfo,
+    events::{EventsCacheKey, SerializedEventList},
     permissions::{PermissionsCacheKey, SerializedNodePermissionsList},
 };
 
@@ -35,6 +36,7 @@ pub struct AppState {
     entry: Arc<RwLock<Option<Entry>>>,
     permissions_cache: Cache<PermissionsCacheKey, Arc<SerializedNodePermissionsList>>,
     customer_cache: Cache<String, Arc<SerializedCustomerInfo>>,
+    events_cache: Cache<EventsCacheKey, Arc<SerializedEventList>>,
 }
 
 pub enum WrappedClient {
@@ -51,6 +53,7 @@ impl Default for AppState {
             entry: Arc::new(RwLock::new(None)),
             permissions_cache: setup_cache(None),
             customer_cache: setup_cache(Some(Duration::from_secs(30 * 60))),
+            events_cache: setup_cache(Some(Duration::from_secs(60))),
         }
     }
 }
@@ -223,12 +226,18 @@ impl AppState {
         Ok(client)
     }
 
-    pub fn get_permissions_cache(&self) -> &Cache<PermissionsCacheKey, Arc<SerializedNodePermissionsList>> {
+    pub fn get_permissions_cache(
+        &self,
+    ) -> &Cache<PermissionsCacheKey, Arc<SerializedNodePermissionsList>> {
         &self.permissions_cache
     }
 
     pub fn get_customer_cache(&self) -> &Cache<String, Arc<SerializedCustomerInfo>> {
         &self.customer_cache
+    }
+
+    pub fn get_events_cache(&self) -> &Cache<EventsCacheKey, Arc<SerializedEventList>> {
+        &self.events_cache
     }
 }
 
@@ -306,7 +315,7 @@ impl TryFrom<ListParams> for ListAllParams {
     }
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Clone)]
 pub struct Range {
     pub offset: u64,
     pub limit: u64,

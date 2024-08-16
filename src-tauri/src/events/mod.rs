@@ -1,7 +1,10 @@
 mod models;
+use std::sync::Arc;
+
 use crate::AppState;
 use dco3::{eventlog::EventlogParams, Eventlog};
-use models::{EventListParams, SerializedEvent, SerializedEventList, SerializedOperationTypes};
+use models::{EventListParams, SerializedEvent, SerializedOperationTypes};
+pub use models::{EventsCacheKey, SerializedEventList};
 use tauri::State;
 
 #[tauri::command]
@@ -11,12 +14,28 @@ pub async fn get_events(
 ) -> Result<SerializedEventList, String> {
     let client = state.get_client().await?;
 
-    Ok(client
+    let key = EventsCacheKey::new(client.get_base_url().to_string(), params.clone());
+
+    if let Some(events) = state.get_events_cache().get(&key).await {
+        return Ok((*events).clone());
+    }
+
+    let events = client
         .eventlog
-        .get_events(params.try_into()?)
+        .get_events(params.clone().try_into()?)
         .await
-        .map_err(|e| e.to_string())?
-        .into())
+        .map_err(|e| e.to_string())?;
+
+    let serialized_events: SerializedEventList = events.into();
+
+    let serialized_events = Arc::new(serialized_events);
+
+    state
+        .get_events_cache()
+        .insert(key, serialized_events.clone())
+        .await;
+
+    Ok((*serialized_events).clone())
 }
 
 #[tauri::command]
