@@ -7,8 +7,14 @@ use dco3::{
     Dracoon, FilterOperator, FilterQueryBuilder, ListAllParams, OAuth2Flow,
 };
 use keyring::Entry;
+use moka::future::Cache;
 use serde::{Deserialize, Serialize};
 use tauri::async_runtime::RwLock;
+
+use crate::{
+    config::setup_cache,
+    permissions::{PermissionsCacheKey, SerializedNodePermissionsList},
+};
 
 const ROLE_ROOM_MANAGER: &str = "ROOM_MANAGER";
 const ROLE_CONFIG_MANAGER: &str = "CONFIG_MANAGER";
@@ -26,6 +32,7 @@ pub struct AppState {
     client: Arc<RwLock<WrappedClient>>,
     app_auth: Arc<RwLock<AppAuth>>,
     entry: Arc<RwLock<Option<Entry>>>,
+    permissions_cache: Cache<PermissionsCacheKey, Arc<SerializedNodePermissionsList>>,
 }
 
 pub enum WrappedClient {
@@ -40,6 +47,7 @@ impl Default for AppState {
             client: Arc::new(RwLock::new(WrappedClient::Unset)),
             app_auth: Arc::new(RwLock::new(AppAuth::Unset)),
             entry: Arc::new(RwLock::new(None)),
+            permissions_cache: setup_cache(),
         }
     }
 }
@@ -211,14 +219,24 @@ impl AppState {
 
         Ok(client)
     }
+
+    pub fn get_cache(&self) -> &Cache<PermissionsCacheKey, Arc<SerializedNodePermissionsList>> {
+        &self.permissions_cache
+    }
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Eq, Clone)]
 pub struct ListParams {
     pub offset: Option<u64>,
     pub limit: Option<u64>,
     pub filter: Option<String>,
     pub sort: Option<String>,
+}
+
+impl ListParams {
+    pub fn to_string(&self) -> String {
+        serde_json::to_string(self).unwrap_or_default()
+    }
 }
 
 impl TryFrom<ListParams> for ListAllParams {

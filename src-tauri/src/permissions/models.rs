@@ -1,12 +1,44 @@
+use std::hash::Hash;
+
 use dco3::{
     eventlog::{AuditNodeList, AuditNodeResponse, AuditUserPermission},
     nodes::NodePermissions,
 };
 use serde::Serialize;
 
+use crate::models::ListParams;
+
 pub type SerializedNodePermissionsList = Vec<SerializedNodePermissions>;
 
-#[derive(Serialize)]
+#[derive(PartialEq, Eq)]
+pub struct PermissionsCacheKey {
+    url: String,
+    params: ListParams
+}
+
+impl PermissionsCacheKey {
+    pub fn new(url: String, params: ListParams) -> Self {
+        Self {
+            url,
+            params
+        }
+    }
+}
+
+impl From<&PermissionsCacheKey> for String {
+    fn from(value: &PermissionsCacheKey) -> Self {
+        format!("{}{}", value.url, value.params.to_string())
+    }
+}
+
+impl Hash for PermissionsCacheKey {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        let key: String = self.into();
+        key.hash(state);
+    }
+}
+
+#[derive(Serialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct SerializedNodePermissions {
     pub node_id: i64,
@@ -104,7 +136,7 @@ impl From<SerializedNodePermissions> for Vec<FlattenedNodePermissions> {
     }
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct SerializedUserPermissions {
     pub user_id: i64,

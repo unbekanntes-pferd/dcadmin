@@ -1,6 +1,11 @@
+use std::{hash::Hash, time::Duration};
+
+use moka::future::Cache;
 use tracing::Level;
 use tracing_log::LogTracer;
 use tracing_subscriber::FmtSubscriber;
+pub const CACHE_TTL: u64 = 60 * 5; // 5 minutes
+pub const CACHE_MAX_CAPACITY: u64 = 100;
 
 pub fn get_client_credentials() -> (String, String) {
     let client_id = include_str!("../.env")
@@ -29,4 +34,12 @@ pub fn setup_logging() {
         .finish();
 
     tracing::subscriber::set_global_default(subscriber).expect("setting default subscriber failed");
+}
+
+pub fn setup_cache<K: Hash + Eq + Send + Sync + 'static, V: Clone + Send + Sync + 'static>(
+) -> Cache<K, V> {
+    Cache::builder()
+        .time_to_live(Duration::from_secs(CACHE_TTL))
+        .max_capacity(CACHE_MAX_CAPACITY)
+        .build()
 }

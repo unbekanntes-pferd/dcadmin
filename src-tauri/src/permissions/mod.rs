@@ -1,8 +1,12 @@
 mod models;
+use std::sync::Arc;
+
 use crate::{models::ListParams, AppState};
 use dco3::{eventlog::AuditNodesFilter, Eventlog, ListAllParams, Users};
-use models::{AuditNodeListWrapper, FlattenedNodePermissions, SerializedNodePermissionsList};
+use models::{AuditNodeListWrapper, FlattenedNodePermissions};
 use tauri::State;
+
+pub use models::{PermissionsCacheKey, SerializedNodePermissionsList};
 
 #[tauri::command]
 #[allow(deprecated)]
@@ -12,15 +16,28 @@ pub async fn get_permissions(
 ) -> Result<SerializedNodePermissionsList, String> {
     let client = state.get_client().await?;
 
-    let events = client
+    let url = client.get_base_url().to_string();
+    let key = PermissionsCacheKey::new(url, params.clone());
+
+    if let Some(permissions) = state.get_cache().get(&key).await {
+        return Ok((*permissions).clone());
+    }
+
+    let permissions = client
         .eventlog
         .get_node_permissions(params.try_into()?)
         .await
         .map_err(|e| e.to_string())?;
 
-    let wrapped_events: AuditNodeListWrapper = events.into();
+    let wrapped_permissions: AuditNodeListWrapper = permissions.into();
+    let serializable_permissions: SerializedNodePermissionsList = wrapped_permissions.into();
+    let serializable_permissions = Arc::new(serializable_permissions);
 
-    Ok(wrapped_events.into())
+    state
+        .get_cache()
+        .insert(key, serializable_permissions.clone())
+        .await;
+    Ok((*serializable_permissions).clone())
 }
 
 #[tauri::command]
@@ -32,14 +49,23 @@ pub async fn export_user_permissions(
 ) -> Result<(), String> {
     let client = state.get_client().await?;
 
-    let permissions = client
-        .eventlog
-        .get_node_permissions(params.try_into()?)
-        .await
-        .map_err(|e| e.to_string())?;
+    let url = client.get_base_url().to_string();
+    let key = PermissionsCacheKey::new(url, params.clone());
 
-    let wrapped_permissions: AuditNodeListWrapper = permissions.into();
-    let serializable_permissions: SerializedNodePermissionsList = wrapped_permissions.into();
+    let serializable_permissions = if let Some(permissions) = state.get_cache().get(&key).await {
+        (*permissions).clone()
+    } else {
+        let fetched_permissions = client
+            .eventlog
+            .get_node_permissions(params.try_into()?)
+            .await
+            .map_err(|e| e.to_string())?;
+
+        let wrapped_permissions: AuditNodeListWrapper = fetched_permissions.into();
+        let serializable_permissions: SerializedNodePermissionsList = wrapped_permissions.into();
+        serializable_permissions
+    };
+
     let flattened_permissions: Vec<FlattenedNodePermissions> = serializable_permissions
         .into_iter()
         .map(|perms| Into::<Vec<FlattenedNodePermissions>>::into(perms))
