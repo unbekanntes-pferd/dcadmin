@@ -5,7 +5,6 @@ import type { NodePermissions, NodePermissionsListEntry } from "./models";
 export const getPermissions = async (params: ListParams) => {
     try {
         let permissionsList: NodePermissionsListEntry[] = await invoke('get_permissions', { params });
-        console.log(permissionsList);
         return permissionsList.filter((entry) => entry.nodeCreatedById !== 0);
     }
     catch (error) {

@@ -25,7 +25,6 @@
 		url = addHttps(url);
 
 		if (!await validateUrl(url)) {
-			console.log('Invalid url', url);
 			const errrorToast = createToastSettings(`Invalid url (${url})`, ToastType.Error);
 			toastStore.trigger(errrorToast);
 			loginState = LoginState.Init;

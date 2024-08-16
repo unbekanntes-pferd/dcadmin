@@ -7,6 +7,7 @@
 	import UsersIcon from '~icons/mdi/users';
 	import { page } from '$app/stores';
 	import NodeBackButton from './NodeBackButton.svelte';
+	import { lastNodesPage } from '../stores/nodes';
 
 	export let nodes: NodeInfo[];
 
@@ -16,16 +17,18 @@
 	);
 
 	let paginationSettings = {
-		page: 0,
+		page: $lastNodesPage,
 		limit: 10,
 		size: nodes.length,
 		amounts: [10, 25, 50]
 	} satisfies PaginationSettings;
 
 	$: paginationSettings.size = nodes.length;
+	$: $lastNodesPage = paginationSettings.page;
 	$: if (paginationSettings.page * paginationSettings.limit >= nodes.length) {
 		paginationSettings.page = 0;
 	}
+
 </script>
 
 <div class="overflow-x-auto space-y-2 h-full w-4/5 ml-4 mt-4">

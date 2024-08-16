@@ -24,7 +24,6 @@ pub async fn init_auth_code_flow(url: String, state: State<'_, AppState>) -> Res
         .map_err(|e| e.to_string())?;
 
     if let Ok(refresh_token) = entry.get_dracoon_env() {
-        eprintln!("Using refresh token");
         state.init_client(client).await;
         state.set_refresh_token(refresh_token).await;
         state.set_entry(entry).await;
@@ -57,7 +56,6 @@ pub async fn connect(
             let entry = state.entry().read().await;
 
             if let Some(entry) = &*entry {
-                eprintln!("Setting new refresh token");
                 entry
                     .set_dracoon_env(&new_refresh_token)
                     .map_err(|e| e.to_string())?;
@@ -70,10 +68,8 @@ pub async fn connect(
                 let (user_account, refresh_token) = state.connect(auth_code).await?;
                 let entry = state.entry().read().await;
 
-                eprintln!("{:?}", entry);
-
                 if let Some(entry) = &*entry {
-                    eprintln!("Setting new refresh token");
+
                     entry
                         .set_dracoon_env(&refresh_token)
                         .map_err(|e| e.to_string())?;

@@ -5,6 +5,7 @@
 		AccordionItem,
 		getToastStore,
 		Paginator,
+		SlideToggle,
 		type PaginationSettings
 	} from '@skeletonlabs/skeleton';
 	import Spinner from './Spinner.svelte';
@@ -22,6 +23,8 @@
 	let downloading = false;
 	let loading = false;
 	let roleFilters: string[] = [];
+	let lockedFilter = false;
+	let accordionOpen = true;
 	const toastStore = getToastStore();
 
 	let paginationSettings = {
@@ -60,8 +63,11 @@
 				params.filter = filter.join('|');
 			}
 
+			if (lockedFilter) {
+				params.filter = params.filter ? `${params.filter}|isLocked:eq:true` : 'isLocked:eq:true';
+			}
+
 			userList = await getUsers(params);
-			console.log(userList);
 			paginationSettings.size = userList.range.total;
 		} catch (e) {
 			const errorToast = createToastSettings(`Failed to fetch events. (${e})`, ToastType.Error);
@@ -88,7 +94,7 @@
 		if (filePath) {
 			let params: ListParams = {
 				offset: 0,
-				limit: 500,
+				limit: 500
 			};
 
 			if (roleFilters && roleFilters.length > 0) {
@@ -121,7 +127,7 @@
 
 <div class="flex flex-col w-full p-4">
 	<Accordion class="mb-4">
-		<AccordionItem open>
+		<AccordionItem bind:open={accordionOpen}>
 			<svelte:fragment slot="lead"><UserFilterIcon /></svelte:fragment>
 			<svelte:fragment slot="summary">User options</svelte:fragment>
 			<svelte:fragment slot="content">
@@ -149,6 +155,14 @@
 										{/each}
 									</select>
 								{/if}
+							</div>
+							<div class="mt-4">
+								<SlideToggle
+									name="slider-label"
+									bind:checked={lockedFilter}
+									active="bg-primary-600"
+									on:change={fetchUsers}>🔒Locked</SlideToggle
+								>
 							</div>
 							<div class="flex flex-row justify-between mt-4">
 								<button
@@ -190,7 +204,7 @@
 			></Paginator>
 		</div>
 	</div>
-	<div class="flex-1 overflow-y-auto" style="height: 490px">
+	<div class="flex-1 overflow-y-auto" style="{accordionOpen ? 'height: 440px' : 'height: 760px'}">
 		{#if loading}
 			<div class="flex justify-center items-center">
 				<Spinner />
