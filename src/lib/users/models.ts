@@ -31,7 +31,7 @@ export const roleList = [
     { label: 'Room Manager', value: 'ROOM_MANAGER' },
     { label: 'User Manager', value: 'USER_MANAGER' },
     { label: 'Group Manager', value: 'GROUP_MANAGER' },
-    { label: 'Auditor', value: 'AUDITOR' },
+    { label: 'Auditor', value: 'LOG_AUDITOR' },
     { label: 'User', value: 'USER' },
     { label: 'Guest user', value: 'GUEST_USER' }
 ];
