@@ -177,13 +177,13 @@ impl From<LogEventList> for SerializedEventList {
     }
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct SerializedOperationTypes {
     pub operations: Vec<SerializedOperation>,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct SerializedOperation {
     pub id: i64,

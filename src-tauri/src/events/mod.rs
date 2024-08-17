@@ -3,8 +3,8 @@ use std::sync::Arc;
 
 use crate::AppState;
 use dco3::{eventlog::EventlogParams, Eventlog};
-use models::{EventListParams, SerializedEvent, SerializedOperationTypes};
-pub use models::{EventsCacheKey, SerializedEventList};
+use models::{EventListParams, SerializedEvent};
+pub use models::{EventsCacheKey, SerializedEventList, SerializedOperationTypes};
 use tauri::State;
 
 #[tauri::command]
@@ -90,10 +90,24 @@ pub async fn get_operation_types(
 ) -> Result<SerializedOperationTypes, String> {
     let client = state.get_client().await?;
 
-    Ok(client
+    let key = client.get_base_url().to_string();
+
+    if let Some(operation_types) = state.get_operations_cache().get(&key).await {
+        return Ok((*operation_types).clone());
+    }
+
+    let operation_types: SerializedOperationTypes = client
         .eventlog
         .get_event_operations()
         .await
-        .map_err(|e| e.to_string())?
-        .into())
+        .map_err(|e| e.to_string())?.into();
+
+    let operation_types = Arc::new(operation_types);
+
+    state
+        .get_operations_cache()
+        .insert(key, operation_types.clone())
+        .await;
+
+    Ok((*operation_types).clone())
 }

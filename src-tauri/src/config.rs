@@ -4,8 +4,7 @@ use moka::future::Cache;
 use tracing::Level;
 use tracing_log::LogTracer;
 use tracing_subscriber::FmtSubscriber;
-pub const CACHE_TTL: u64 = 60 * 5; // 5 minutes
-pub const CACHE_MAX_CAPACITY: u64 = 100;
+pub const DEFAULT_CACHE_TTL: u64 = 60 * 5; // 5 minutes
 
 pub fn get_client_credentials() -> (String, String) {
     let client_id = include_str!("../.env")
@@ -37,10 +36,11 @@ pub fn setup_logging() {
 }
 
 pub fn setup_cache<K: Hash + Eq + Send + Sync + 'static, V: Clone + Send + Sync + 'static>(
+    max_capacity: u64,
     ttl: Option<Duration>,
 ) -> Cache<K, V> {
     Cache::builder()
-        .time_to_live(ttl.unwrap_or(Duration::from_secs(CACHE_TTL)))
-        .max_capacity(CACHE_MAX_CAPACITY)
+        .time_to_live(ttl.unwrap_or(Duration::from_secs(DEFAULT_CACHE_TTL)))
+        .max_capacity(max_capacity)
         .build()
 }

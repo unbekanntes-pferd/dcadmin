@@ -14,7 +14,7 @@ use tauri::async_runtime::RwLock;
 use crate::{
     config::setup_cache,
     customer::SerializedCustomerInfo,
-    events::{EventsCacheKey, SerializedEventList},
+    events::{EventsCacheKey, SerializedEventList, SerializedOperationTypes},
     permissions::{PermissionsCacheKey, SerializedNodePermissionsList},
 };
 
@@ -23,6 +23,8 @@ const ROLE_CONFIG_MANAGER: &str = "CONFIG_MANAGER";
 const ROLE_AUDITOR: &str = "LOG_AUDITOR";
 const ROLE_USER_MANAGER: &str = "USER_MANAGER";
 const ROLE_GROUP_MANAGER: &str = "GROUP_MANAGER";
+const DEFAULT_MAX_CACHE_ENTITY_COUNT: u64 = 100;
+const DEFAULT_MAX_CACHE_STATIC_COUNT: u64 = 1;
 
 pub enum AppAuth {
     Unset,
@@ -34,9 +36,41 @@ pub struct AppState {
     client: Arc<RwLock<WrappedClient>>,
     app_auth: Arc<RwLock<AppAuth>>,
     entry: Arc<RwLock<Option<Entry>>>,
-    permissions_cache: Cache<PermissionsCacheKey, Arc<SerializedNodePermissionsList>>,
-    customer_cache: Cache<String, Arc<SerializedCustomerInfo>>,
-    events_cache: Cache<EventsCacheKey, Arc<SerializedEventList>>,
+    cache: AppCache
+}
+
+pub struct AppCache {
+    pub permissions: Cache<PermissionsCacheKey, Arc<SerializedNodePermissionsList>>,
+    pub customer: Cache<String, Arc<SerializedCustomerInfo>>,
+    pub events: Cache<EventsCacheKey, Arc<SerializedEventList>>,
+    pub operations: Cache<String, Arc<SerializedOperationTypes>>
+}
+
+impl AppCache {
+    pub fn new() -> Self {
+        AppCache {
+            permissions: setup_cache(DEFAULT_MAX_CACHE_ENTITY_COUNT, None),
+            customer: setup_cache(DEFAULT_MAX_CACHE_STATIC_COUNT, Some(Duration::from_secs(30 * 60))),
+            events: setup_cache(DEFAULT_MAX_CACHE_ENTITY_COUNT, Some(Duration::from_secs(60))),
+            operations: setup_cache(DEFAULT_MAX_CACHE_STATIC_COUNT, Some(Duration::from_secs(30 * 60)))
+        }
+    }
+
+    pub fn permissions(&self) -> &Cache<PermissionsCacheKey, Arc<SerializedNodePermissionsList>> {
+        &self.permissions
+    }
+
+    pub fn customer(&self) -> &Cache<String, Arc<SerializedCustomerInfo>> {
+        &self.customer
+    }
+
+    pub fn events(&self) -> &Cache<EventsCacheKey, Arc<SerializedEventList>> {
+        &self.events
+    }
+
+    pub fn operations(&self) -> &Cache<String, Arc<SerializedOperationTypes>> {
+        &self.operations
+    }
 }
 
 pub enum WrappedClient {
@@ -51,9 +85,7 @@ impl Default for AppState {
             client: Arc::new(RwLock::new(WrappedClient::Unset)),
             app_auth: Arc::new(RwLock::new(AppAuth::Unset)),
             entry: Arc::new(RwLock::new(None)),
-            permissions_cache: setup_cache(None),
-            customer_cache: setup_cache(Some(Duration::from_secs(30 * 60))),
-            events_cache: setup_cache(Some(Duration::from_secs(60))),
+            cache: AppCache::new()
         }
     }
 }
@@ -229,15 +261,19 @@ impl AppState {
     pub fn get_permissions_cache(
         &self,
     ) -> &Cache<PermissionsCacheKey, Arc<SerializedNodePermissionsList>> {
-        &self.permissions_cache
+        &self.cache.permissions()
     }
 
     pub fn get_customer_cache(&self) -> &Cache<String, Arc<SerializedCustomerInfo>> {
-        &self.customer_cache
+        &self.cache.customer()
     }
 
     pub fn get_events_cache(&self) -> &Cache<EventsCacheKey, Arc<SerializedEventList>> {
-        &self.events_cache
+        &self.cache.events()
+    }
+
+    pub fn get_operations_cache(&self) -> &Cache<String, Arc<SerializedOperationTypes>> {
+        &self.cache.operations()
     }
 }
 
