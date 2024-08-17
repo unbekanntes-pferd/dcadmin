@@ -16,7 +16,7 @@
 	import DownloadIcon from '~icons/mdi/download';
 	import CalenderFilterIcon from '~icons/mdi/calendar-filter';
 	import Spinner from '../../components/Spinner.svelte';
-	import UserSearch from '../../components/UserSearch.svelte';
+	import UserSearch from '../../components/users/UserSearch.svelte';
 	import { createToastSettings } from '$lib/utils';
 	import { ToastType } from '$lib/models';
 

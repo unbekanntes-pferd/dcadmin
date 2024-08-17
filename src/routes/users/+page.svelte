@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { TabGroup, Tab } from '@skeletonlabs/skeleton';
-	import UserPermissions from '../../components/UserPermissions.svelte';
+	import UserPermissions from '../../components/users/UserPermissions.svelte';
 	import ListIcon from '~icons/mdi/format-list-bulleted';
 	import PermissionsIcon from '~icons/mdi/user-key';
-	import UserList from '../../components/UserList.svelte';
+	import UserList from '../../components/users/UserList.svelte';
 
 	let tabSet: number = 0;
 </script>

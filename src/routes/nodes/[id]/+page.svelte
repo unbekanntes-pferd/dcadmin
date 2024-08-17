@@ -3,7 +3,7 @@
 	import { getPermissions } from '$lib/permissions';
 	import { intoNodeInfo, type NodeInfo } from '$lib/permissions/models';
 	import { getToastStore } from '@skeletonlabs/skeleton';
-	import NodeView from '../../../components/NodeView.svelte';
+	import NodeView from '../../../components/nodes/NodeView.svelte';
 	import Spinner from '../../../components/Spinner.svelte';
 	import { createToastSettings } from '$lib/utils';
 	import { ToastType } from '$lib/models';

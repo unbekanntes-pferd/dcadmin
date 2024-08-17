@@ -7,7 +7,7 @@
 	import UsersIcon from '~icons/mdi/users';
 	import { page } from '$app/stores';
 	import NodeBackButton from './NodeBackButton.svelte';
-	import { lastNodesPage } from '../stores/nodes';
+	import { lastNodesPage } from '../../stores/nodes';
 
 	export let nodes: NodeInfo[];
 

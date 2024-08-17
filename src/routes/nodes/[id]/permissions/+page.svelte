@@ -5,12 +5,12 @@
 	import { createToastSettings } from '$lib/utils';
 	import { getToastStore } from '@skeletonlabs/skeleton';
 	import type { NodePermissionsListEntry, UserPermissions } from '$lib/permissions/models';
-	import NodePermissionsView from '../../../../components/NodePermissionsView.svelte';
-	import NodeInfoView from '../../../../components/NodeInfoView.svelte';
+	import NodePermissionsView from '../../../../components/nodes/NodePermissionsView.svelte';
+	import NodeInfoView from '../../../../components/nodes/NodeInfoView.svelte';
 	import { save } from '@tauri-apps/api/dialog';
 	import DownloadIcon from '~icons/mdi/download';
 	import Spinner from '../../../../components/Spinner.svelte';
-	import NodeBackButton from '../../../../components/NodeBackButton.svelte';
+	import NodeBackButton from '../../../../components/nodes/NodeBackButton.svelte';
 
 	const toastStore = getToastStore();
 	let downloading = false;

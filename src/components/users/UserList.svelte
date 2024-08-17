@@ -8,7 +8,7 @@
 		SlideToggle,
 		type PaginationSettings
 	} from '@skeletonlabs/skeleton';
-	import Spinner from './Spinner.svelte';
+	import Spinner from '../Spinner.svelte';
 	import UserFilterIcon from '~icons/mdi/user-search';
 	import CancelIcon from '~icons/mdi/cancel-circle';
 	import DownloadIcon from '~icons/mdi/download';
