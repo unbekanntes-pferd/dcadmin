@@ -1,6 +1,6 @@
 [package]
 name = "app"
-version = "0.1.0"
+version = "0.1.1"
 description = "DCAdmin - desktop client to manage DRACOON"
 authors = ["Octavio Simone"]
 license = "https://github.com/unbekanntes-pferd/dcadmin"
@@ -15,12 +15,12 @@ rust-version = "1.60"
 tauri-build = { version = "1.5", features = [] }
 
 [dependencies]
-serde_json = "1.0"
-serde = { version = "1.0", features = ["derive"] }
-tauri = { version = "1.6.7", features = [ "api-all"] }
+serde_json = "1"
+serde = { version = "1", features = ["derive"] }
+tauri = { version = "1.7", features = [ "api-all"] }
 dco3 = "0.14.3"
 open = "5"
-chrono = "0.4.38"
+chrono = "0.4"
 keyring = {version = "2" }
 csv = "1"
 moka = {version = "0.12", features = ["future"] }
