@@ -205,7 +205,6 @@ impl From<LogOperationList> for SerializedOperationTypes {
             operations: value
                 .operation_list
                 .into_iter()
-                .filter(|op| !op.is_deprecated)
                 .map(|op| op.into())
                 .collect(),
         }
