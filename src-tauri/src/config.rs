@@ -5,6 +5,7 @@ use std::{
     time::{Duration, SystemTime},
 };
 
+use dco3::DracoonClientError;
 use moka::future::Cache;
 use tracing::level_filters::LevelFilter;
 use tracing_log::LogTracer;
@@ -12,6 +13,7 @@ use tracing_subscriber::EnvFilter;
 pub const DEFAULT_CACHE_TTL: u64 = 60 * 5; // 5 minutes
 pub const APPLICATION_NAME: &str = "dcadmin";
 pub const MAX_LOG_SIZE: u64 = 10 * 1024 * 1024; // 10MB
+pub const DEFAULT_NO_DEBUG_MESSAGE: &str = "No details";
 
 pub fn get_client_credentials() -> (String, String) {
     let client_id = include_str!("../.env")
@@ -110,4 +112,21 @@ pub fn setup_cache<K: Hash + Eq + Send + Sync + 'static, V: Clone + Send + Sync 
         .time_to_live(ttl.unwrap_or(Duration::from_secs(DEFAULT_CACHE_TTL)))
         .max_capacity(max_capacity)
         .build()
+}
+
+pub fn log_dracoon_error(e: &DracoonClientError, msg: Option<&str>) {
+    if let Some(msg) = msg {
+        tracing::error!("{msg}: {e}");
+    } else {
+        tracing::error!("Error: {e}");
+    }
+
+    if let Some(e) = e.get_http_error() {
+        tracing::error!(
+            "HTTP error: {} - {} ({})",
+            e.code(),
+            e.error_message(),
+            e.debug_info().unwrap_or(DEFAULT_NO_DEBUG_MESSAGE.into())
+        );
+    }
 }
