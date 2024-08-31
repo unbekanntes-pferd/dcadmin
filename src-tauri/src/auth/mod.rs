@@ -7,7 +7,7 @@ use tauri::State;
 
 mod credentials;
 use crate::{
-    config::log_dracoon_error,
+    config::{log_dracoon_error, APPLICATION_NAME},
     models::{AppAuth, AppState, SerializedUserAccount},
 };
 
@@ -29,6 +29,7 @@ pub async fn init_auth_code_flow(url: String, state: State<'_, AppState>) -> Res
         .with_base_url(url)
         .with_client_id(dcadmin_client_id)
         .with_client_secret(dcadmin_client_secret)
+        .with_user_agent(APPLICATION_NAME)
         .build()
         .map_err(|e| {
             tracing::error!("Error building client: {e}");
@@ -144,6 +145,7 @@ pub async fn validate_dracoon_url(url: String) -> Result<bool, String> {
         .with_base_url(&url)
         .with_client_id(dcadmin_client_id)
         .with_client_secret(dcadmin_client_secret)
+        .with_user_agent(APPLICATION_NAME)
         .build()
         .map_err(|e| {
             tracing::error!("Error building public client: {e}");
