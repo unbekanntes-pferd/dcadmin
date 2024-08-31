@@ -24,7 +24,7 @@ pub async fn get_permissions(
     }
 
     let permissions = client
-        .eventlog
+        .eventlog()
         .get_node_permissions(params.try_into()?)
         .await
         .map_err(|e| e.to_string())?;
@@ -56,7 +56,7 @@ pub async fn export_user_permissions(
         (*permissions).clone()
     } else {
         let fetched_permissions = client
-            .eventlog
+            .eventlog()
             .get_node_permissions(params.try_into()?)
             .await
             .map_err(|e| e.to_string())?;
@@ -92,7 +92,7 @@ pub async fn export_all_user_permissions(
     let mut users = state
         .get_client()
         .await?
-        .users
+        .users()
         .get_users(None, None, None)
         .await
         .map_err(|e| e.to_string())?;
@@ -103,7 +103,7 @@ pub async fn export_all_user_permissions(
             let new_users = state
                 .get_client()
                 .await?
-                .users
+                .users()
                 .get_users(Some(params), None, None)
                 .await
                 .map_err(|e| e.to_string())?;
@@ -127,7 +127,7 @@ pub async fn export_all_user_permissions(
         let permissions = state
             .get_client()
             .await?
-            .eventlog
+            .eventlog()
             .get_node_permissions(params)
             .await
             .map_err(|e| e.to_string())?;

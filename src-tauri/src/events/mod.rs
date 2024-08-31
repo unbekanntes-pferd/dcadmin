@@ -21,7 +21,7 @@ pub async fn get_events(
     }
 
     let events = client
-        .eventlog
+        .eventlog()
         .get_events(params.clone().try_into()?)
         .await
         .map_err(|e| e.to_string())?;
@@ -47,7 +47,7 @@ pub async fn export_events(
     let client = state.get_client().await?;
 
     let mut events = client
-        .eventlog
+        .eventlog()
         .get_events(params.clone().try_into()?)
         .await
         .map_err(|e| e.to_string())?;
@@ -59,7 +59,7 @@ pub async fn export_events(
         };
 
         let new_events = client
-            .eventlog
+            .eventlog()
             .get_events(params)
             .await
             .map_err(|e| e.to_string())?;
@@ -97,7 +97,7 @@ pub async fn get_operation_types(
     }
 
     let operation_types: SerializedOperationTypes = client
-        .eventlog
+        .eventlog()
         .get_event_operations()
         .await
         .map_err(|e| e.to_string())?.into();

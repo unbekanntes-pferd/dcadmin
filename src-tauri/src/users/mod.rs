@@ -14,7 +14,7 @@ pub async fn get_users(
     let params = params.try_into()?;
 
     Ok(client
-        .users
+        .users()
         .get_users(Some(params), Some(true), None)
         .await
         .map_err(|e| e.to_string())?
@@ -30,7 +30,7 @@ pub async fn export_users(
     let client = state.get_client().await?;
 
     let mut users = client
-        .users
+        .users()
         .get_users(Some(params.clone().try_into()?), Some(true), None)
         .await
         .map_err(|e| e.to_string())?;
@@ -42,7 +42,7 @@ pub async fn export_users(
         };
 
         let new_users = client
-            .users
+            .users()
             .get_users(Some(params.try_into()?), Some(true), None)
             .await
             .map_err(|e| e.to_string())?;

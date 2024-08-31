@@ -85,7 +85,7 @@ pub async fn connect(
 
     let client = state.get_client().await?;
     let version_data = client
-        .public
+        .public()
         .get_software_version()
         .await
         .map_err(|e| e.to_string())?;
@@ -105,7 +105,7 @@ pub async fn validate_dracoon_url(url: String) -> Result<bool, String> {
         .map_err(|e| e.to_string())?;
 
     let result = client
-        .public
+        .public()
         .get_software_version()
         .await
         .map(|_| true)

@@ -1,5 +1,5 @@
 use dco3::{
-    user::{Role, RoleList},
+    roles::{Role, RoleList},
     users::{UserItem, UserList},
 };
 use serde::Serialize;
