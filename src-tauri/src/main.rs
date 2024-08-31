@@ -13,7 +13,8 @@ mod permissions;
 mod users;
 
 fn main() {
-    setup_logging();
+    let config_dir = config::get_or_create_config_dir();
+    setup_logging(&config_dir, false);
 
     tauri::Builder::default()
         .manage(AppState::default())

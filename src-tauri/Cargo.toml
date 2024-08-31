@@ -24,10 +24,11 @@ chrono = "0.4"
 keyring = {version = "2" }
 csv = "1"
 moka = {version = "0.12", features = ["future"] }
+dirs = "5"
 
 # tracing
 tracing = "0.1"
-tracing-subscriber = "0.3"
+tracing-subscriber = {version = "0.3", features = ["env-filter"]}
 tracing-log = "0.2"
 
 [features]

@@ -1,10 +1,17 @@
-use std::{hash::Hash, time::Duration};
+use std::{
+    fs::OpenOptions,
+    hash::Hash,
+    path::{Path, PathBuf},
+    time::{Duration, SystemTime},
+};
 
 use moka::future::Cache;
-use tracing::Level;
+use tracing::level_filters::LevelFilter;
 use tracing_log::LogTracer;
-use tracing_subscriber::FmtSubscriber;
+use tracing_subscriber::EnvFilter;
 pub const DEFAULT_CACHE_TTL: u64 = 60 * 5; // 5 minutes
+pub const APPLICATION_NAME: &str = "dcadmin";
+pub const MAX_LOG_SIZE: u64 = 10 * 1024 * 1024; // 10MB
 
 pub fn get_client_credentials() -> (String, String) {
     let client_id = include_str!("../.env")
@@ -25,14 +32,74 @@ pub fn get_client_credentials() -> (String, String) {
     (client_id.to_string(), client_secret.to_string())
 }
 
-pub fn setup_logging() {
+pub fn setup_logging(config_dir: &Path, debug: bool) {
     LogTracer::init().expect("Failed to set logger");
 
-    let subscriber = FmtSubscriber::builder()
-        .with_max_level(Level::INFO)
-        .finish();
+    let log_file_path = config_dir.join("dcadmin.log");
 
-    tracing::subscriber::set_global_default(subscriber).expect("setting default subscriber failed");
+    // get file size
+    let size = if let Ok(metadata) = std::fs::metadata(&log_file_path) {
+        metadata.len()
+    } else {
+        0
+    };
+
+    // set up env filter
+    let env_filter = if debug {
+        EnvFilter::from_default_env()
+            .add_directive(LevelFilter::DEBUG.into())
+            .add_directive("hyper_utils=warn".parse().expect("invalid crate setup"))
+    } else {
+        EnvFilter::from_default_env().add_directive(LevelFilter::INFO.into())
+    };
+
+    // set up log format
+    let log_format = tracing_subscriber::fmt::format()
+        .with_level(true)
+        .with_thread_names(false)
+        .with_target(true)
+        .with_ansi(false)
+        .compact();
+
+    // rotate log file if bigger than 10MB
+    let log_file = if size > MAX_LOG_SIZE {
+        let timestamp = SystemTime::now()
+            .duration_since(SystemTime::UNIX_EPOCH)
+            .unwrap_or(Duration::from_secs(0))
+            .as_secs();
+        let rotated_log_file_path = config_dir.join(format!("dcadmin.log.{}", timestamp));
+        std::fs::rename(&log_file_path, &rotated_log_file_path).expect("Failed to rotate log file");
+        OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open(log_file_path)
+            .expect("Failed to open log file")
+    } else {
+        OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open(log_file_path)
+            .expect("Failed to open log file")
+    };
+
+    tracing_subscriber::fmt()
+        .with_env_filter(env_filter)
+        .event_format(log_format)
+        .with_writer(std::sync::Mutex::new(log_file))
+        .init();
+}
+
+pub fn get_or_create_config_dir() -> PathBuf {
+    if let Some(config_dir) = dirs::config_dir() {
+        let config_dir = config_dir.join(APPLICATION_NAME);
+        if !config_dir.exists() {
+            std::fs::create_dir_all(&config_dir).expect("Failed to create config directory");
+        }
+        config_dir
+    } else {
+        // config_dir might be None on any non Linux, MacOS or Windows platform
+        panic!("unsupported platform");
+    }
 }
 
 pub fn setup_cache<K: Hash + Eq + Send + Sync + 'static, V: Clone + Send + Sync + 'static>(
