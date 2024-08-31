@@ -44,6 +44,6 @@
 	<NodeView {nodes} />
 {:else}
 	<div class="flex justify-center w-full h-full">
-		<Spinner width={100} height={100} />
+		<Spinner width='w-36'  />
 	</div>
 {/if}

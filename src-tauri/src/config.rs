@@ -8,7 +8,6 @@ use std::{
 use dco3::DracoonClientError;
 use moka::future::Cache;
 use tracing::level_filters::LevelFilter;
-use tracing_log::LogTracer;
 use tracing_subscriber::EnvFilter;
 pub const DEFAULT_CACHE_TTL: u64 = 60 * 5; // 5 minutes
 pub const APPLICATION_NAME: &str = "dcadmin";
@@ -35,8 +34,6 @@ pub fn get_client_credentials() -> (String, String) {
 }
 
 pub fn setup_logging(config_dir: &Path, debug: bool) {
-    LogTracer::init().expect("Failed to set logger");
-
     let log_file_path = config_dir.join("dcadmin.log");
 
     // get file size
