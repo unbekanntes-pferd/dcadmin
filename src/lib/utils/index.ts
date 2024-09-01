@@ -39,6 +39,15 @@ export const formatUTCDateTime = (dateString: string): string => {
     });
 };
 
+export const formatUTCDateTimeShort = (dateString: string): string => {
+    const date = new Date(dateString);
+    return date.toLocaleString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+    });
+}
+
 export const createToastSettings = (message: string, toastType: ToastType, timeout?: number): ToastSettings => {
     return {
         message,

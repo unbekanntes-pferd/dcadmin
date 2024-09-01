@@ -22,7 +22,7 @@ export interface RoleList {
 
 export interface RoleItem {
     id: number;
-    roleName: string;
+    name: string;
     description: string;
 }
 
@@ -33,5 +33,13 @@ export const roleList = [
     { label: 'Group Manager', value: 'GROUP_MANAGER' },
     { label: 'Auditor', value: 'LOG_AUDITOR' },
     { label: 'User', value: 'USER' },
-    { label: 'Guest user', value: 'GUEST_USER' }
+    { label: 'Guest user', value: 'GUEST_USER' },
+];
+
+export const roleListForGroups = [
+    { label: 'Config Manager', value: 'CONFIG_MANAGER' },
+    { label: 'Room Manager', value: 'ROOM_MANAGER' },
+    { label: 'User Manager', value: 'USER_MANAGER' },
+    { label: 'Group Manager', value: 'GROUP_MANAGER' },
+    { label: 'Auditor', value: 'LOG_AUDITOR' },
 ];

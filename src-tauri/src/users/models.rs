@@ -4,14 +4,7 @@ use dco3::{
 };
 use serde::Serialize;
 
-use crate::models::Range;
-
-const CONFIG_MANAGER: &str = "CONFIG_MANAGER";
-const ROOM_MANAGER: &str = "ROOM_MANAGER";
-const USER_MANAGER: &str = "USER_MANAGER";
-const GROUP_MANAGER: &str = "GROUP_MANAGER";
-const AUDITOR: &str = "LOG_AUDITOR";
-const GUEST_USER: &str = "GUEST_USER";
+use crate::{models::Range, ROLE_AUDITOR, ROLE_CONFIG_MANAGER, ROLE_GROUP_MANAGER, ROLE_GUEST_USER, ROLE_ROOM_MANAGER, ROLE_USER_MANAGER};
 
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -63,32 +56,32 @@ impl From<SerializedUserItem> for FlattenedUserItem {
             is_config_manager: value
                 .user_roles
                 .as_ref()
-                .map(|roles| roles.items.iter().any(|role| role.name == CONFIG_MANAGER))
+                .map(|roles| roles.items.iter().any(|role| role.name == ROLE_CONFIG_MANAGER))
                 .unwrap_or(false),
             is_room_manager: value
                 .user_roles
                 .as_ref()
-                .map(|roles| roles.items.iter().any(|role| role.name == ROOM_MANAGER))
+                .map(|roles| roles.items.iter().any(|role| role.name == ROLE_ROOM_MANAGER))
                 .unwrap_or(false),
             is_user_manager: value
                 .user_roles
                 .as_ref()
-                .map(|roles| roles.items.iter().any(|role| role.name == USER_MANAGER))
+                .map(|roles| roles.items.iter().any(|role| role.name == ROLE_USER_MANAGER))
                 .unwrap_or(false),
             is_group_manager: value
                 .user_roles
                 .as_ref()
-                .map(|roles| roles.items.iter().any(|role| role.name == GROUP_MANAGER))
+                .map(|roles| roles.items.iter().any(|role| role.name == ROLE_GROUP_MANAGER))
                 .unwrap_or(false),
             is_auditor: value
                 .user_roles
                 .as_ref()
-                .map(|roles| roles.items.iter().any(|role| role.name == AUDITOR))
+                .map(|roles| roles.items.iter().any(|role| role.name == ROLE_AUDITOR))
                 .unwrap_or(false),
             is_guest_user: value
                 .user_roles
                 .as_ref()
-                .map(|roles| roles.items.iter().any(|role| role.name == GUEST_USER))
+                .map(|roles| roles.items.iter().any(|role| role.name == ROLE_GUEST_USER))
                 .unwrap_or(false),
         }
     }

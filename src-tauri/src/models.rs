@@ -18,11 +18,12 @@ use crate::{
     permissions::{PermissionsCacheKey, SerializedNodePermissionsList},
 };
 
-const ROLE_ROOM_MANAGER: &str = "ROOM_MANAGER";
-const ROLE_CONFIG_MANAGER: &str = "CONFIG_MANAGER";
-const ROLE_AUDITOR: &str = "LOG_AUDITOR";
-const ROLE_USER_MANAGER: &str = "USER_MANAGER";
-const ROLE_GROUP_MANAGER: &str = "GROUP_MANAGER";
+pub const ROLE_ROOM_MANAGER: &str = "ROOM_MANAGER";
+pub const ROLE_CONFIG_MANAGER: &str = "CONFIG_MANAGER";
+pub const ROLE_AUDITOR: &str = "LOG_AUDITOR";
+pub const ROLE_USER_MANAGER: &str = "USER_MANAGER";
+pub const ROLE_GROUP_MANAGER: &str = "GROUP_MANAGER";
+pub const ROLE_GUEST_USER: &str = "GUEST_USER";
 const DEFAULT_MAX_CACHE_ENTITY_COUNT: u64 = 100;
 const DEFAULT_MAX_CACHE_STATIC_COUNT: u64 = 1;
 
@@ -295,7 +296,7 @@ impl AppState {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, Eq, Clone)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Eq, Clone, Default)]
 pub struct ListParams {
     pub offset: Option<u64>,
     pub limit: Option<u64>,
@@ -374,4 +375,14 @@ pub struct Range {
     pub offset: u64,
     pub limit: u64,
     pub total: u64,
+}
+
+impl From<dco3::Range> for Range {
+    fn from(value: dco3::Range) -> Self {
+        Range {
+            offset: value.offset,
+            limit: value.limit,
+            total: value.total,
+        }
+    }
 }

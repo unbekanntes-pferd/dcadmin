@@ -5,6 +5,8 @@ use dco3::Users;
 use models::{FlattenedUserItem, SerializedUserItem, SerializedUserList};
 use tauri::State;
 
+pub (crate) use models::SerializedRoleList;
+
 mod models;
 
 #[tauri::command]
@@ -101,6 +103,9 @@ pub async fn export_users(
         tracing::error!("Error flushing CSV writer: {e}");
         e.to_string()
     })?;
+
+    let elapsed_csv = now.elapsed().as_millis();
+    tracing::info!("Exported all users to CSV in {elapsed_csv} ms");
 
     Ok(())
 }
