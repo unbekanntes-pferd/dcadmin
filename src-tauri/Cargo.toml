@@ -1,6 +1,6 @@
 [package]
 name = "app"
-version = "0.1.1"
+version = "0.2.0"
 description = "DCAdmin - desktop client to manage DRACOON"
 authors = ["Octavio Simone"]
 license = "https://github.com/unbekanntes-pferd/dcadmin"

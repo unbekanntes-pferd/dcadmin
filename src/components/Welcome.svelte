@@ -10,6 +10,7 @@
 	import { toReadableSize } from '$lib/utils';
 	import UsersIcon from '~icons/mdi/users';
 	import SpaceIcon from '~icons/mdi/database';
+	import { getVersion } from '@tauri-apps/api/app';
 
 	const firstName = $userAccount!.firstName;
 	const isConfigManager = $userAccount!.isConfigManager;
@@ -104,4 +105,12 @@
 			<img src="/dcadmin_logo.png" alt="dcadmin logo" width="200" height="200" />
 		</div>
 	</div>
+<footer class="card-footer text-xs text-gray-500">
+	{#await getVersion() then version}
+	dcadmin {version}
+	{:catch}
+		<p class="text-xs text-red-400">version not available</p>
+	{/await}
+
+</footer>
 </div>

@@ -162,7 +162,7 @@
 	<Accordion class="mb-4">
 		<AccordionItem bind:open={accordionOpen}>
 			<svelte:fragment slot="lead"><UserFilterIcon /></svelte:fragment>
-			<svelte:fragment slot="summary">User options</svelte:fragment>
+			<svelte:fragment slot="summary">Group options</svelte:fragment>
 			<svelte:fragment slot="content">
 				<div class="card p-4 overflow-y-visible w-full">
 					<header class="card-header flex flex-col w-full items-center mb-2 pt-0">
