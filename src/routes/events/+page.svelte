@@ -246,7 +246,7 @@
 	</Accordion>
 	{#if loading}
 		<div class="flex justify-center items-center">
-			<Spinner width={100} height={100} />
+			<Spinner width='w-36' />
 		</div>
 	{:else if eventList}
 		<div class="my-4">

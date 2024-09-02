@@ -12,17 +12,18 @@ use serde::{Deserialize, Serialize};
 use tauri::async_runtime::RwLock;
 
 use crate::{
-    config::setup_cache,
+    config::{log_dracoon_error, setup_cache},
     customer::SerializedCustomerInfo,
     events::{EventsCacheKey, SerializedEventList, SerializedOperationTypes},
     permissions::{PermissionsCacheKey, SerializedNodePermissionsList},
 };
 
-const ROLE_ROOM_MANAGER: &str = "ROOM_MANAGER";
-const ROLE_CONFIG_MANAGER: &str = "CONFIG_MANAGER";
-const ROLE_AUDITOR: &str = "LOG_AUDITOR";
-const ROLE_USER_MANAGER: &str = "USER_MANAGER";
-const ROLE_GROUP_MANAGER: &str = "GROUP_MANAGER";
+pub const ROLE_ROOM_MANAGER: &str = "ROOM_MANAGER";
+pub const ROLE_CONFIG_MANAGER: &str = "CONFIG_MANAGER";
+pub const ROLE_AUDITOR: &str = "LOG_AUDITOR";
+pub const ROLE_USER_MANAGER: &str = "USER_MANAGER";
+pub const ROLE_GROUP_MANAGER: &str = "GROUP_MANAGER";
+pub const ROLE_GUEST_USER: &str = "GUEST_USER";
 const DEFAULT_MAX_CACHE_ENTITY_COUNT: u64 = 100;
 const DEFAULT_MAX_CACHE_STATIC_COUNT: u64 = 1;
 
@@ -36,23 +37,32 @@ pub struct AppState {
     client: Arc<RwLock<WrappedClient>>,
     app_auth: Arc<RwLock<AppAuth>>,
     entry: Arc<RwLock<Option<Entry>>>,
-    cache: AppCache
+    cache: AppCache,
 }
 
 pub struct AppCache {
     pub permissions: Cache<PermissionsCacheKey, Arc<SerializedNodePermissionsList>>,
     pub customer: Cache<String, Arc<SerializedCustomerInfo>>,
     pub events: Cache<EventsCacheKey, Arc<SerializedEventList>>,
-    pub operations: Cache<String, Arc<SerializedOperationTypes>>
+    pub operations: Cache<String, Arc<SerializedOperationTypes>>,
 }
 
 impl AppCache {
     pub fn new() -> Self {
         AppCache {
             permissions: setup_cache(DEFAULT_MAX_CACHE_ENTITY_COUNT, None),
-            customer: setup_cache(DEFAULT_MAX_CACHE_STATIC_COUNT, Some(Duration::from_secs(30 * 60))),
-            events: setup_cache(DEFAULT_MAX_CACHE_ENTITY_COUNT, Some(Duration::from_secs(60))),
-            operations: setup_cache(DEFAULT_MAX_CACHE_STATIC_COUNT, Some(Duration::from_secs(30 * 60)))
+            customer: setup_cache(
+                DEFAULT_MAX_CACHE_STATIC_COUNT,
+                Some(Duration::from_secs(30 * 60)),
+            ),
+            events: setup_cache(
+                DEFAULT_MAX_CACHE_ENTITY_COUNT,
+                Some(Duration::from_secs(60)),
+            ),
+            operations: setup_cache(
+                DEFAULT_MAX_CACHE_STATIC_COUNT,
+                Some(Duration::from_secs(30 * 60)),
+            ),
         }
     }
 
@@ -85,7 +95,7 @@ impl Default for AppState {
             client: Arc::new(RwLock::new(WrappedClient::Unset)),
             app_auth: Arc::new(RwLock::new(AppAuth::Unset)),
             entry: Arc::new(RwLock::new(None)),
-            cache: AppCache::new()
+            cache: AppCache::new(),
         }
     }
 }
@@ -181,7 +191,10 @@ impl AppState {
             WrappedClient::Disconnected(client) => client.clone(),
             WrappedClient::Connected(client) => {
                 return Ok((
-                    client.get_user_info().await.map_err(|e| e.to_string())?,
+                    client.get_user_info().await.map_err(|e| {
+                        log_dracoon_error(&e, Some("Error fetching user info"));
+                        e.to_string()
+                    })?,
                     client.get_refresh_token().await.to_string(),
                 ))
             }
@@ -193,7 +206,10 @@ impl AppState {
         let client = client_clone
             .connect(OAuth2Flow::authorization_code(auth_code))
             .await
-            .map_err(|e| e.to_string())?;
+            .map_err(|e| {
+                tracing::error!("Error connecting with auth code: {e}");
+                e.to_string()
+            })?;
 
         let refresh_token = client.get_refresh_token().await.to_string();
 
@@ -227,7 +243,10 @@ impl AppState {
         let client = client_clone
             .connect(OAuth2Flow::refresh_token(refresh_token))
             .await
-            .map_err(|e| e.to_string())?;
+            .map_err(|e| {
+                tracing::error!("Error connecting with refresh token: {e}");
+                e.to_string()
+            })?;
 
         let refresh_token = client.get_refresh_token().await.to_string();
 
@@ -277,7 +296,7 @@ impl AppState {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, Eq, Clone)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Eq, Clone, Default)]
 pub struct ListParams {
     pub offset: Option<u64>,
     pub limit: Option<u64>,
@@ -356,4 +375,14 @@ pub struct Range {
     pub offset: u64,
     pub limit: u64,
     pub total: u64,
+}
+
+impl From<dco3::Range> for Range {
+    fn from(value: dco3::Range) -> Self {
+        Range {
+            offset: value.offset,
+            limit: value.limit,
+            total: value.total,
+        }
+    }
 }

@@ -22,7 +22,7 @@ pub async fn get_customer_info(
     }
 
     let info = client
-        .user
+        .user()
         .get_customer_info()
         .await
         .map_err(|e| e.to_string())?;

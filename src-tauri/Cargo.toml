@@ -1,6 +1,6 @@
 [package]
 name = "app"
-version = "0.1.1"
+version = "0.2.0"
 description = "DCAdmin - desktop client to manage DRACOON"
 authors = ["Octavio Simone"]
 license = "https://github.com/unbekanntes-pferd/dcadmin"
@@ -18,16 +18,17 @@ tauri-build = { version = "1.5", features = [] }
 serde_json = "1"
 serde = { version = "1", features = ["derive"] }
 tauri = { version = "1.7", features = [ "api-all"] }
-dco3 = "0.14.3"
+dco3 = "0.15"
 open = "5"
 chrono = "0.4"
 keyring = {version = "2" }
 csv = "1"
 moka = {version = "0.12", features = ["future"] }
+dirs = "5"
 
 # tracing
 tracing = "0.1"
-tracing-subscriber = "0.3"
+tracing-subscriber = {version = "0.3", features = ["env-filter"] }
 tracing-log = "0.2"
 
 [features]

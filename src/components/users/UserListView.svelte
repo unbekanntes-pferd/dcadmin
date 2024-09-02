@@ -1,13 +1,6 @@
 <script lang="ts">
-	import {
-		roleList,
-		type RoleItem,
-		type RoleList,
-		type UserItem,
-		type UserList
-	} from '$lib/users/models';
+	import { type UserList } from '$lib/users/models';
 	import { formatUTCDateTime } from '$lib/utils';
-	import type { PopupSettings } from '@skeletonlabs/skeleton';
 
 	export let userList: UserList;
 	$: users = userList.items;

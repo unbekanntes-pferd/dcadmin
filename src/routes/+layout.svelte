@@ -11,6 +11,7 @@
 	import LogoutIcon from '~icons/mdi/logout';
 	import HomeIcon from '~icons/mdi/home';
 	import NodesIcon from '~icons/mdi/folder-account';
+	import GroupIcon from '~icons/mdi/account-group';
 	import { goto } from '$app/navigation';
 	import { initializeStores, Toast } from '@skeletonlabs/skeleton';
 
@@ -47,6 +48,10 @@
 					<AppRailAnchor href="/users" selected={$page.url.pathname === '/users'}>
 						<svelte:fragment slot="lead"><PermissionsIcon /></svelte:fragment>
 						<div class="flex flex-col text-xs">Users</div>
+					</AppRailAnchor>
+					<AppRailAnchor href="/groups" selected={$page.url.pathname.startsWith('/groups')}>
+						<svelte:fragment slot="lead"><GroupIcon /></svelte:fragment>
+						<div class="flex flex-col text-xs">Groups</div>
 					</AppRailAnchor>
 					{#if !$userAccount.isCloud}
 					<AppRailAnchor href="/nodes/0" selected={$page.url.pathname.startsWith('/nodes')}>

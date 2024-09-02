@@ -3,17 +3,20 @@
 
 use config::setup_logging;
 use models::AppState;
+pub use models::{ROLE_CONFIG_MANAGER, ROLE_ROOM_MANAGER, ROLE_USER_MANAGER, ROLE_GROUP_MANAGER, ROLE_AUDITOR, ROLE_GUEST_USER};
 
 mod auth;
 mod config;
 mod customer;
 mod events;
+mod groups;
 mod models;
 mod permissions;
-mod users;
+pub (crate) mod users;
 
 fn main() {
-    setup_logging();
+    let config_dir = config::get_or_create_config_dir();
+    setup_logging(&config_dir, false);
 
     tauri::Builder::default()
         .manage(AppState::default())
@@ -29,7 +32,13 @@ fn main() {
             users::export_users,
             permissions::get_permissions,
             permissions::export_user_permissions,
-            permissions::export_all_user_permissions
+            permissions::export_all_user_permissions,
+            groups::get_group,
+            groups::get_groups,
+            groups::export_groups,
+            groups::get_group_users,
+            groups::export_group_users,
+            groups::export_all_group_users,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
