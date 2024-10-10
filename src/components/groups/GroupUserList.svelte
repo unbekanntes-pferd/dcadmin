@@ -9,7 +9,7 @@
 	import GroupIcon from '~icons/mdi/account-group';
 	import GroupBackButton from './GroupBackButton.svelte';
 	import DownloadIcon from '~icons/mdi/download';
-	import { save } from '@tauri-apps/api/dialog';
+	import { save } from '@tauri-apps/plugin-dialog';
 	import { onMount } from 'svelte';
 
 	let loading = false;

@@ -75,11 +75,10 @@ pub async fn connect(
                     let entry = state.entry().read().await;
 
                     if let Some(entry) = &*entry {
-                        entry
-                            .set_dracoon_env(&new_refresh_token)
-                            .map_err(|e| {
-                                tracing::error!("Error updating refresh token in keyring: {e}");
-                                e.to_string()})?;
+                        entry.set_dracoon_env(&new_refresh_token).map_err(|e| {
+                            tracing::error!("Error updating refresh token in keyring: {e}");
+                            e.to_string()
+                        })?;
                     }
 
                     tracing::info!("Updated refresh token in keyring");
@@ -90,8 +89,11 @@ pub async fn connect(
                     let entry = state.entry().read().await;
                     if let Some(entry) = &*entry {
                         entry.delete_dracoon_env().map_err(|e| {
-                            tracing::error!("Error deleting invalid refresh token from keyring: {e}");
-                            e.to_string()})?;
+                            tracing::error!(
+                                "Error deleting invalid refresh token from keyring: {e}"
+                            );
+                            e.to_string()
+                        })?;
                         tracing::info!("Deleted invalid refresh token from keyring: {e}");
                     }
 
@@ -108,11 +110,10 @@ pub async fn connect(
                 tracing::info!("Connected with auth code");
 
                 if let Some(entry) = &*entry {
-                    entry
-                        .set_dracoon_env(&refresh_token)
-                        .map_err(|e| {
-                            tracing::error!("Error storing refresh token in keyring: {e}");
-                            e.to_string()})?;
+                    entry.set_dracoon_env(&refresh_token).map_err(|e| {
+                        tracing::error!("Error storing refresh token in keyring: {e}");
+                        e.to_string()
+                    })?;
                 }
 
                 tracing::info!("Stored refresh token in keyring");

@@ -5,7 +5,7 @@ use dco3::Users;
 use models::{FlattenedUserItem, SerializedUserItem, SerializedUserList};
 use tauri::State;
 
-pub (crate) use models::SerializedRoleList;
+pub(crate) use models::SerializedRoleList;
 
 mod models;
 

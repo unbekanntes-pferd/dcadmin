@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { save } from '@tauri-apps/api/dialog';
+	import { save } from '@tauri-apps/plugin-dialog';
 	import { downloadEvents, getEvents, getOperationTypes } from '$lib/events';
 	import type { EventList, EventParams, OperationTypeList } from '$lib/events/models';
 	import { onMount } from 'svelte';

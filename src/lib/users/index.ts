@@ -1,4 +1,4 @@
-import { invoke } from "@tauri-apps/api";
+import { invoke } from "@tauri-apps/api/core";
 import type { UserList } from "./models";
 import type { ListParams } from "$lib/models";
 

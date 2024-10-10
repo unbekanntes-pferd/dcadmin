@@ -7,7 +7,8 @@ use dco3::{
     Dracoon, Groups,
 };
 use models::{
-    FlattenedSerializedGroup, SerializedGroupInfo, SerializedGroupList, SerializedGroupUserList, SerializedGroupUserWithGroupInfo
+    FlattenedSerializedGroup, SerializedGroupInfo, SerializedGroupList, SerializedGroupUserList,
+    SerializedGroupUserWithGroupInfo,
 };
 use tauri::State;
 mod models;
@@ -20,21 +21,16 @@ pub async fn get_group(
     let now = Instant::now();
     let client = state.get_client().await?;
 
-    let group = client
-        .groups()
-        .get_group(group_id)
-        .await
-        .map_err(|e| {
-            log_dracoon_error(&e, Some("Error fetching group"));
-            e.to_string()
-        })?;
+    let group = client.groups().get_group(group_id).await.map_err(|e| {
+        log_dracoon_error(&e, Some("Error fetching group"));
+        e.to_string()
+    })?;
 
     let elapsed = now.elapsed().as_millis();
     tracing::info!("Fetched group {group_id} in {elapsed} ms");
 
     Ok(group.into())
 }
-
 
 #[tauri::command]
 pub async fn get_groups(

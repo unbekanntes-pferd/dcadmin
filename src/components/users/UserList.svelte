@@ -17,7 +17,7 @@
 	import UserListView from './UserListView.svelte';
 	import { onMount } from 'svelte';
 	import { downloadUsers, getUsers } from '$lib/users';
-	import { save } from '@tauri-apps/api/dialog';
+	import { save } from '@tauri-apps/plugin-dialog';
 
 	let userList: UserList | null;
 	let downloading = false;

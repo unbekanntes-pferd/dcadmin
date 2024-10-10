@@ -15,7 +15,7 @@
 	import { createToastSettings } from '$lib/utils';
 	import GroupListView from './GroupListView.svelte';
 	import { onMount } from 'svelte';
-	import { save } from '@tauri-apps/api/dialog';
+	import { save } from '@tauri-apps/plugin-dialog';
 	import type { GroupList } from '$lib/groups/models';
 	import { downloadAllGroupUsers, downloadGroups, getGroups } from '$lib/groups';
 

@@ -17,7 +17,7 @@
 	import CancelIcon from '~icons/mdi/cancel-circle';
 	import DownloadIcon from '~icons/mdi/download';
 	import Spinner from '../Spinner.svelte';
-	import { save } from '@tauri-apps/api/dialog';
+	import { save } from '@tauri-apps/plugin-dialog';
 	import { ToastType, type ListParams } from '$lib/models';
 	import { createToastSettings } from '$lib/utils';
 

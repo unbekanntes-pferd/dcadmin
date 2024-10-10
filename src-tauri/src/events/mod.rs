@@ -113,7 +113,8 @@ pub async fn get_operation_types(
         .eventlog()
         .get_event_operations()
         .await
-        .map_err(|e| e.to_string())?.into();
+        .map_err(|e| e.to_string())?
+        .into();
 
     let operation_types = Arc::new(operation_types);
 

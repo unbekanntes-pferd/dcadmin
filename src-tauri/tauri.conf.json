@@ -3,64 +3,49 @@
   "build": {
     "beforeBuildCommand": "npm run build",
     "beforeDevCommand": "npm run dev",
-    "devPath": "http://localhost:5173",
-    "distDir": "../build"
+    "frontendDist": "../build",
+    "devUrl": "http://localhost:5173"
   },
-  "package": {
-    "productName": "dcadmin",
-    "version": "0.2.0"
-  },
-  "tauri": {
-    "allowlist": {
-      "all": true,
-      "protocol": {
-        "all": true,
-        "asset": false,
-        "assetScope": []
-      }
+  "bundle": {
+    "active": true,
+    "category": "DeveloperTool",
+    "copyright": "",
+    "targets": "all",
+    "externalBin": [],
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "windows": {
+      "certificateThumbprint": null,
+      "digestAlgorithm": "sha256",
+      "timestampUrl": ""
     },
-    "bundle": {
-      "active": true,
-      "category": "DeveloperTool",
-      "copyright": "",
+    "longDescription": "",
+    "macOS": {
+      "entitlements": null,
+      "exceptionDomain": "",
+      "frameworks": [],
+      "providerShortName": null,
+      "signingIdentity": "-"
+    },
+    "resources": [],
+    "shortDescription": "",
+    "linux": {
       "deb": {
         "depends": []
-      },
-      "externalBin": [],
-      "icon": [
-        "icons/32x32.png",
-        "icons/128x128.png",
-        "icons/128x128@2x.png",
-        "icons/icon.icns",
-        "icons/icon.ico"
-      ],
-      "identifier": "com.unbekanntespferd.dcadmin",
-      "longDescription": "",
-      "macOS": {
-        "entitlements": null,
-        "exceptionDomain": "",
-        "frameworks": [],
-        "providerShortName": null,
-        "signingIdentity": "-"
-      },
-      "resources": [],
-      "shortDescription": "",
-      "targets": "all",
-      "windows": {
-        "certificateThumbprint": null,
-        "digestAlgorithm": "sha256",
-        "timestampUrl": ""
       }
-    },
-    "security": {
-      "csp": null,
-      "dangerousRemoteDomainIpcAccess": [
-      ]
-    },
-    "updater": {
-      "active": false
-    },
-    
+    }
+  },
+  "productName": "dcadmin",
+  "mainBinaryName": "dcadmin",
+  "version": "0.2.0",
+  "identifier": "com.unbekanntespferd.dcadmin",
+  "plugins": {},
+  "app": {
     "windows": [
       {
         "fullscreen": false,
@@ -69,6 +54,9 @@
         "title": "dcadmin",
         "width": 1300
       }
-    ]
+    ],
+    "security": {
+      "csp": null
+    }
   }
 }

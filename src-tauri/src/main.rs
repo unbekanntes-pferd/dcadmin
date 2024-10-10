@@ -3,7 +3,10 @@
 
 use config::setup_logging;
 use models::AppState;
-pub use models::{ROLE_CONFIG_MANAGER, ROLE_ROOM_MANAGER, ROLE_USER_MANAGER, ROLE_GROUP_MANAGER, ROLE_AUDITOR, ROLE_GUEST_USER};
+pub use models::{
+    ROLE_AUDITOR, ROLE_CONFIG_MANAGER, ROLE_GROUP_MANAGER, ROLE_GUEST_USER, ROLE_ROOM_MANAGER,
+    ROLE_USER_MANAGER,
+};
 
 mod auth;
 mod config;
@@ -12,13 +15,15 @@ mod events;
 mod groups;
 mod models;
 mod permissions;
-pub (crate) mod users;
+pub(crate) mod users;
 
 fn main() {
     let config_dir = config::get_or_create_config_dir();
     setup_logging(&config_dir, false);
 
     tauri::Builder::default()
+        .plugin(tauri_plugin_clipboard_manager::init())
+        .plugin(tauri_plugin_dialog::init())
         .manage(AppState::default())
         .invoke_handler(tauri::generate_handler![
             auth::init_auth_code_flow,

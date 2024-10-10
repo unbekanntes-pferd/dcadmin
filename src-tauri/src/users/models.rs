@@ -4,7 +4,10 @@ use dco3::{
 };
 use serde::Serialize;
 
-use crate::{models::Range, ROLE_AUDITOR, ROLE_CONFIG_MANAGER, ROLE_GROUP_MANAGER, ROLE_GUEST_USER, ROLE_ROOM_MANAGER, ROLE_USER_MANAGER};
+use crate::{
+    models::Range, ROLE_AUDITOR, ROLE_CONFIG_MANAGER, ROLE_GROUP_MANAGER, ROLE_GUEST_USER,
+    ROLE_ROOM_MANAGER, ROLE_USER_MANAGER,
+};
 
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -56,22 +59,42 @@ impl From<SerializedUserItem> for FlattenedUserItem {
             is_config_manager: value
                 .user_roles
                 .as_ref()
-                .map(|roles| roles.items.iter().any(|role| role.name == ROLE_CONFIG_MANAGER))
+                .map(|roles| {
+                    roles
+                        .items
+                        .iter()
+                        .any(|role| role.name == ROLE_CONFIG_MANAGER)
+                })
                 .unwrap_or(false),
             is_room_manager: value
                 .user_roles
                 .as_ref()
-                .map(|roles| roles.items.iter().any(|role| role.name == ROLE_ROOM_MANAGER))
+                .map(|roles| {
+                    roles
+                        .items
+                        .iter()
+                        .any(|role| role.name == ROLE_ROOM_MANAGER)
+                })
                 .unwrap_or(false),
             is_user_manager: value
                 .user_roles
                 .as_ref()
-                .map(|roles| roles.items.iter().any(|role| role.name == ROLE_USER_MANAGER))
+                .map(|roles| {
+                    roles
+                        .items
+                        .iter()
+                        .any(|role| role.name == ROLE_USER_MANAGER)
+                })
                 .unwrap_or(false),
             is_group_manager: value
                 .user_roles
                 .as_ref()
-                .map(|roles| roles.items.iter().any(|role| role.name == ROLE_GROUP_MANAGER))
+                .map(|roles| {
+                    roles
+                        .items
+                        .iter()
+                        .any(|role| role.name == ROLE_GROUP_MANAGER)
+                })
                 .unwrap_or(false),
             is_auditor: value
                 .user_roles

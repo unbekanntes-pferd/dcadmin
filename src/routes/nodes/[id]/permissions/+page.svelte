@@ -7,7 +7,7 @@
 	import type { NodePermissionsListEntry, UserPermissions } from '$lib/permissions/models';
 	import NodePermissionsView from '../../../../components/nodes/NodePermissionsView.svelte';
 	import NodeInfoView from '../../../../components/nodes/NodeInfoView.svelte';
-	import { save } from '@tauri-apps/api/dialog';
+	import { save } from '@tauri-apps/plugin-dialog';
 	import DownloadIcon from '~icons/mdi/download';
 	import Spinner from '../../../../components/Spinner.svelte';
 	import NodeBackButton from '../../../../components/nodes/NodeBackButton.svelte';
