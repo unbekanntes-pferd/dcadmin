@@ -6,14 +6,14 @@
 	$: users = userList.items;
 </script>
 
-<div class="table-container h-full overflow-y-auto">
-	<table class="table table-hover">
+<div class="table-container">
+	<table class="table table-hover min-w-full">
 		<thead>
 			<tr>
 				<th>Name</th>
-				<th>E-Mail</th>
-				<th>Login</th>
-				<th>Roles</th>
+				<th class="hidden sm:table-cell">E-Mail</th>
+				<th class="hidden md:table-cell">Login</th>
+				<th class="hidden lg:table-cell">Roles</th>
 				<th>Last login</th>
 			</tr>
 		</thead>
@@ -28,10 +28,19 @@
 						<span>
 							{row.isLocked ? '🔒' : ''}
 						</span>
+						<div class="sm:hidden text-xs mt-1 text-surface-400">
+							<span class="font-semibold">E-Mail:</span> {row.email}
+						</div>
+						<div class="md:hidden text-xs mt-1 text-surface-400">
+							<span class="font-semibold">Login:</span> {row.userName}
+						</div>
+						<div class="lg:hidden text-xs mt-1 text-surface-400">
+							<span class="font-semibold">Roles:</span> {row.userRoles ? row.userRoles.items.length : 0}
+						</div>
 					</td>
-					<td>{row.email}</td>
-					<td>{row.userName}</td>
-					<td>{row.userRoles ? row.userRoles.items.length : 0}</td>
+					<td class="hidden sm:table-cell">{row.email}</td>
+					<td class="hidden md:table-cell">{row.userName}</td>
+					<td class="hidden lg:table-cell">{row.userRoles ? row.userRoles.items.length : 0}</td>
 					<td>
 						{row.lastLogin ? formatUTCDateTime(row.lastLogin) : 'never'}
 					</td>

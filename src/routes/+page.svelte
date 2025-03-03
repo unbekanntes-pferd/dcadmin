@@ -5,10 +5,12 @@
 
 </script>
 
-<div class="container h-full w-full flex justify-center items-center">
+<div class="h-full w-full flex justify-center items-center">
 	{#if $isLoggedIn}
 		<Welcome />
 	{:else}
-		<Login />
+		<div class="w-full max-w-md px-4">
+			<Login />
+		</div>
 	{/if}
 </div>

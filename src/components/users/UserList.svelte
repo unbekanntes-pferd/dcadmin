@@ -167,7 +167,7 @@
 							<div class="flex flex-row justify-between mt-4">
 								<button
 									type="button"
-									class="btn variant-outline-warning my-2 w-24"
+									class="btn variant-outline-warning h-10 my-2 w-24"
 									on:click={resetFilters}
 								>
 									<span><CancelIcon /></span>
@@ -175,7 +175,7 @@
 								</button>
 								<button
 									type="button"
-									class="btn variant-filled-primary my-2 w-fit mx-2"
+									class="btn variant-filled-primary h-10 my-2 w-fit mx-2"
 									on:click={handleDownload}
 									disabled={downloading}
 								>
@@ -194,17 +194,15 @@
 		</AccordionItem>
 	</Accordion>
 
-	<div>
-		<div class="my-4">
-			<Paginator
-				bind:settings={paginationSettings}
-				on:page={onPageChange}
-				on:amount={onAmountChange}
-				controlVariant="variant-outline"
-			></Paginator>
-		</div>
+	<div class="my-4">
+		<Paginator
+			bind:settings={paginationSettings}
+			on:page={onPageChange}
+			on:amount={onAmountChange}
+			controlVariant="variant-outline"
+		></Paginator>
 	</div>
-	<div class="flex-1 overflow-y-auto" style="{accordionOpen ? 'height: 440px' : 'height: 760px'}">
+	<div class="flex-1 overflow-y-auto" style="height: calc(100vh - 300px);">
 		{#if loading}
 			<div class="flex justify-center items-center">
 				<Spinner />

@@ -69,26 +69,40 @@
 	{/each}
 {/if}
 
-<div class="overflow-x-auto space-y-2 h-full">
+<div class="space-y-2">
 	<div class="table-container">
-		<table class="table table-hover">
+		<table class="table table-hover min-w-full">
 			<thead>
 				<tr>
 					<th>Name</th>
-					<th>Path</th>
-					<th>Size</th>
-					<th>Quota</th>
+					<th class="hidden md:table-cell">Path</th>
+					<th class="hidden sm:table-cell">Size</th>
+					<th class="hidden lg:table-cell">Quota</th>
 					<th>Permissions</th>
-					<th>Encrypted</th>
+					<th class="hidden sm:table-cell">Encrypted</th>
 				</tr>
 			</thead>
 			<tbody>
 				{#each permissionsList as row}
 					<tr>
-						<td>{row.nodeName}</td>
-						<td>{row.nodeParentPath}</td>
-						<td>{row.nodeSize ? toReadableSize(row.nodeSize) : 0}</td>
-						<td>{row.nodeQuota ? toReadableSize(row.nodeQuota) : 'N/A'}</td>
+						<td>
+							<div>{row.nodeName}</div>
+							<div class="md:hidden text-xs mt-1 text-surface-400">
+								<span class="font-semibold">Path:</span> {row.nodeParentPath}
+							</div>
+							<div class="sm:hidden text-xs mt-1 text-surface-400">
+								<span class="font-semibold">Size:</span> {row.nodeSize ? toReadableSize(row.nodeSize) : 0}
+							</div>
+							<div class="lg:hidden text-xs mt-1 text-surface-400">
+								<span class="font-semibold">Quota:</span> {row.nodeQuota ? toReadableSize(row.nodeQuota) : 'N/A'}
+							</div>
+							<div class="sm:hidden text-xs mt-1 text-surface-400">
+								<span class="font-semibold">Encrypted:</span> {row.nodeIsEncrypted ? '✅️' : '❌'}
+							</div>
+						</td>
+						<td class="hidden md:table-cell">{row.nodeParentPath}</td>
+						<td class="hidden sm:table-cell">{row.nodeSize ? toReadableSize(row.nodeSize) : 0}</td>
+						<td class="hidden lg:table-cell">{row.nodeQuota ? toReadableSize(row.nodeQuota) : 'N/A'}</td>
 						<td>
 							{#if row.userPermissions.length > 0}
 								<div use:popup={findSettingsByTarget(getPopupTarget(row))}>
@@ -98,7 +112,7 @@
 								{PermissionsTemplate.None}
 							{/if}
 						</td>
-						<td>{row.nodeIsEncrypted ? '✅️' : '❌'}</td>
+						<td class="hidden sm:table-cell">{row.nodeIsEncrypted ? '✅️' : '❌'}</td>
 					</tr>
 				{/each}
 			</tbody>

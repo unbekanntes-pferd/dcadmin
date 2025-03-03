@@ -132,55 +132,63 @@
 					bind:selectedUserId={userFilter}
 				/>
 
-				<div class="flex flex-row justify-between mt-4">
-					<button
-						type="button"
-						class="btn variant-outline-warning my-2 w-24"
-						on:click={resetFilter}
-					>
-						<span><CancelIcon /></span>
-						<span>Reset</span>
-					</button>
-					<div class="flex flex-row justify-end">
+				<div class="flex flex-col sm:flex-row justify-between mt-4 space-y-2 sm:space-y-0">
+					<!-- Wrap the Reset button in a div for alignment -->
+					<div class="flex items-center sm:m-0">
 						<button
 							type="button"
-							class="btn variant-filled-primary my-2 w-fit mx-2"
-							on:click={handleDownload}
-							disabled={downloading || !nodePermissions}
+							class="btn variant-outline-warning h-10 my-2 w-full sm:w-24 sm:my-0"
+							on:click={resetFilter}
 						>
-							{#if downloading}
-								<Spinner />
-							{:else}
-								<span><DownloadIcon /></span>
-							{/if}
-							<span>Download</span>
+							<span><CancelIcon /></span>
+							<span>Reset</span>
 						</button>
-						<button
-							type="button"
-							class="btn variant-filled-primary my-2 w-fit mx-2"
-							on:click={handleDownloadAll}
-							disabled={downloading}
-						>
-							{#if downloading}
-								<Spinner />
-							{:else}
-								<span><DownloadIcon /></span>
-							{/if}
-							<span>Download all</span>
-						</button>
+					</div>
+					<!-- Download buttons container -->
+					<div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:items-center">
+						<div class="flex items-center sm:m-0">
+							<button
+								type="button"
+								class="btn variant-filled-primary h-10 my-2 w-full sm:w-fit sm:mx-2 sm:my-0"
+								on:click={handleDownload}
+								disabled={downloading || !nodePermissions}
+							>
+								{#if downloading}
+									<Spinner />
+								{:else}
+									<span><DownloadIcon /></span>
+								{/if}
+								<span>Download</span>
+							</button>
+						</div>
+						<div class="flex items-center sm:m-0">
+							<button
+								type="button"
+								class="btn variant-filled-primary h-10 my-2 w-full sm:w-fit sm:mx-2 sm:my-0"
+								on:click={handleDownloadAll}
+								disabled={downloading}
+							>
+								{#if downloading}
+									<Spinner />
+								{:else}
+									<span><DownloadIcon /></span>
+								{/if}
+								<span>Download all</span>
+							</button>
+						</div>
 					</div>
 				</div>
 			</svelte:fragment>
 		</AccordionItem>
 	</Accordion>
 
-	{#if userFilter && nodePermissions}
-		<div class="overflow-auto flex flex-col h-max">
+	<div class="flex-1 overflow-y-auto" style="height: calc(100vh - 300px);">
+		{#if userFilter && nodePermissions}
 			<PermissionsView permissionsList={nodePermissions} />
-		</div>
-	{:else}
-		<div class="flex flex-row justify-center mt-4">
-			<p class="text-gray-300">Select a user to view permissions</p>
-		</div>
-	{/if}
+		{:else}
+			<div class="flex flex-row justify-center mt-4">
+				<p class="text-gray-300">Select a user to view permissions</p>
+			</div>
+		{/if}
+	</div>
 </div>

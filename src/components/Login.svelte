@@ -71,30 +71,32 @@
 </script>
 
 {#if loginState === LoginState.Init}
-	<div class="login-container flex items-center space-x-2">
+	<div class="login-container flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-2 w-full">
 		<input
-			class="input"
+			class="input w-full sm:flex-1"
 			title="Input (text)"
 			type="text"
 			placeholder="DRACOON url"
 			bind:value={url}
 		/>
 
-		<button class="btn variant-filled-primary" on:click={handleLogin}> Log In </button>
+		<button class="btn variant-filled-primary h-10 w-full sm:w-auto" on:click={handleLogin}> Log In </button>
 	</div>
 {/if}
 
 {#if loginState === LoginState.WaitingForCode}
-	<div class="code-container flex items-center space-x-2">
+	<div class="code-container flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-2 w-full">
 		<input
-			class="input"
+			class="input w-full sm:flex-1"
 			title="Input (text)"
 			type="text"
 			placeholder="Authorization code"
 			bind:value={authCode}
 		/>
 
-		<button class="btn variant-filled-primary" on:click={finalizeLogin}> Enter code </button>
-		<button class="btn variant-outline-warning" on:click={handleCancel}> Cancel </button>
+		<div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 w-full sm:w-auto">
+			<button class="btn variant-filled-primary h-10 w-full sm:w-auto" on:click={finalizeLogin}> Enter code </button>
+			<button class="btn variant-outline-warning h-10 w-full sm:w-auto" on:click={handleCancel}> Cancel </button>
+		</div>
 	</div>
 {/if}

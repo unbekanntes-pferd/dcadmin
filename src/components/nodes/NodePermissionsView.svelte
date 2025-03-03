@@ -67,12 +67,12 @@
 {/if}
 
 <div class="table-container">
-	<table class="table table-hover">
+	<table class="table table-hover min-w-full">
 		<thead>
 			<tr>
 				<th>Login</th>
-				<th>First name</th>
-				<th>Last name</th>
+				<th class="hidden md:table-cell">First name</th>
+				<th class="hidden md:table-cell">Last name</th>
 				<th>Permissions</th>
 			</tr>
 		</thead>
@@ -81,9 +81,12 @@
 				<tr>
 					<td>
 						{row.userLogin}
+						<div class="md:hidden text-xs mt-1 text-surface-400">
+							<span class="font-semibold">Name:</span> {row.userFirstName} {row.userLastName}
+						</div>
 					</td>
-					<td>{row.userFirstName}</td>
-					<td>{row.userLastName}</td>
+					<td class="hidden md:table-cell">{row.userFirstName}</td>
+					<td class="hidden md:table-cell">{row.userLastName}</td>
 					<td>
 						<div use:popup={findSettingsByTarget(getPopupTarget(row))}>
 							{displayPermissionsTemplate(row.permissions)}

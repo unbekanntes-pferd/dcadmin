@@ -60,13 +60,13 @@
 	};
 </script>
 
-<div class="flex flex-col w-1/2 overflow-y-visible">
+<div class="flex flex-col w-full overflow-y-visible">
 	<label for="user-filter">User search</label>
 
 	<div class="relative">
 		<input
 			id="user-filter"
-			class="input h-12 mb-4"
+			class="input h-12 mb-4 w-full"
 			type="text"
 			name="user-filter"
 			bind:value={userSearch}
@@ -75,7 +75,7 @@
 		/>
 
 		{#if userSearch && !selected}
-			<div class="card max-h-48 p-4! overflow-y-auto absolute top left" tabindex="-1">
+			<div class="card max-h-48 p-4! overflow-y-auto absolute top left w-full z-10" tabindex="-1">
 				<Autocomplete
 					bind:input={userSearch}
 					options={autocompleteUserList}

@@ -50,7 +50,7 @@
       {
         "fullscreen": false,
         "height": 1000,
-        "resizable": false,
+        "resizable": true,
         "title": "dcadmin",
         "width": 1300
       }
