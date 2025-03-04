@@ -18,6 +18,7 @@
 	import { onMount } from 'svelte';
 	import { downloadUsers, getUsers } from '$lib/users';
 	import { save } from '@tauri-apps/plugin-dialog';
+	import { lastUserListPage } from '../../stores/users';
 
 	let userList: UserList | null;
 	let downloading = false;
@@ -28,13 +29,14 @@
 	const toastStore = getToastStore();
 
 	let paginationSettings = {
-		page: 0,
+		page: $lastUserListPage,
 		limit: 10,
 		size: 0,
 		amounts: [10, 20, 50]
 	} satisfies PaginationSettings;
 
-	$: ({ page, limit } = paginationSettings);
+
+	$: $lastUserListPage = paginationSettings.page;
 
 	let todayStr = new Date().toLocaleDateString('en-CA');
 
@@ -45,7 +47,7 @@
 
 	const onAmountChange = async (e: CustomEvent) => {
 		paginationSettings.limit = e.detail;
-		paginationSettings.page = 0;
+		paginationSettings.page = $lastUserListPage;
 		await fetchUsers();
 	};
 
@@ -54,8 +56,8 @@
 
 		try {
 			let params: ListParams = {
-				offset: page * limit,
-				limit: limit
+				offset: paginationSettings.page * paginationSettings.limit,
+				limit: paginationSettings.limit
 			};
 
 			if (roleFilters && roleFilters.length > 0) {
@@ -121,6 +123,7 @@
 	};
 
 	onMount(async () => {
+
 		await fetchUsers();
 	});
 </script>

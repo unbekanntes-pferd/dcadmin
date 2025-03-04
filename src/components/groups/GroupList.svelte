@@ -245,7 +245,7 @@
 			></Paginator>
 		</div>
 	</div>
-	<div class="flex-1 overflow-y-auto" style={accordionOpen ? 'height: 440px' : 'height: 760px'}>
+	<div class="flex-1 overflow-y-auto" style="height: calc(100vh - 300px);">
 		{#if loading}
 			<div class="flex justify-center items-center">
 				<Spinner />

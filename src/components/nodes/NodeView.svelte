@@ -5,7 +5,7 @@
 	import { Paginator, type PaginationSettings } from '@skeletonlabs/skeleton';
 	import RoomIcon from '~icons/mdi/folder-account';
 	import UsersIcon from '~icons/mdi/users';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import NodeBackButton from './NodeBackButton.svelte';
 	import { lastNodesPage } from '../../stores/nodes';
 
@@ -32,7 +32,7 @@
 </script>
 
 <div class="flex flex-col w-full p-4 space-y-2">
-	{#if $page.url.pathname !== '/nodes/0'}
+	{#if page.url.pathname !== '/nodes/0'}
 		<NodeBackButton />
 	{/if}
 

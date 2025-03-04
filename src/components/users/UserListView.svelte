@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { type UserList } from '$lib/users/models';
-	import { formatUTCDateTime } from '$lib/utils';
+	import { formatUTCDateTime, handleUserNavigation } from '$lib/utils';
+	import RoomIcon from '~icons/mdi/folder-account';
 
 	export let userList: UserList;
 	$: users = userList.items;
@@ -15,6 +16,7 @@
 				<th class="hidden md:table-cell">Login</th>
 				<th class="hidden lg:table-cell">Roles</th>
 				<th>Last login</th>
+				<th>Last admin rooms</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -29,13 +31,16 @@
 							{row.isLocked ? '🔒' : ''}
 						</span>
 						<div class="sm:hidden text-xs mt-1 text-surface-400">
-							<span class="font-semibold">E-Mail:</span> {row.email}
+							<span class="font-semibold">E-Mail:</span>
+							{row.email}
 						</div>
 						<div class="md:hidden text-xs mt-1 text-surface-400">
-							<span class="font-semibold">Login:</span> {row.userName}
+							<span class="font-semibold">Login:</span>
+							{row.userName}
 						</div>
 						<div class="lg:hidden text-xs mt-1 text-surface-400">
-							<span class="font-semibold">Roles:</span> {row.userRoles ? row.userRoles.items.length : 0}
+							<span class="font-semibold">Roles:</span>
+							{row.userRoles ? row.userRoles.items.length : 0}
 						</div>
 					</td>
 					<td class="hidden sm:table-cell">{row.email}</td>
@@ -44,6 +49,13 @@
 					<td>
 						{row.lastLogin ? formatUTCDateTime(row.lastLogin) : 'never'}
 					</td>
+					<td>
+						<div class="text-xs mt-1 text-surface-400">
+							<button on:click={() => handleUserNavigation(row.id)}>
+								<span><RoomIcon /></span>
+							</button>
+						</div></td
+					>
 				</tr>
 			{/each}
 		</tbody>

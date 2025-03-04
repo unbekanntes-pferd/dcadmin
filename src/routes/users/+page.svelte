@@ -4,8 +4,12 @@
 	import ListIcon from '~icons/mdi/format-list-bulleted';
 	import PermissionsIcon from '~icons/mdi/user-key';
 	import UserList from '../../components/users/UserList.svelte';
+	import { lastUserTab } from '../../stores/users';
 
-	let tabSet: number = 0;
+
+	let tabSet = $lastUserTab;
+
+	$: $lastUserTab = tabSet;
 </script>
 
 <TabGroup class="w-full">
