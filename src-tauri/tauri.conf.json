@@ -52,7 +52,9 @@
         "height": 1000,
         "resizable": true,
         "title": "dcadmin",
-        "width": 1300
+        "width": 1300,
+        "minWidth": 800,
+        "minHeight": 600
       }
     ],
     "security": {

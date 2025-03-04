@@ -35,6 +35,7 @@ fn main() {
             events::export_events,
             users::get_users,
             users::export_users,
+            users::get_user_last_admin_rooms,
             permissions::get_permissions,
             permissions::export_user_permissions,
             permissions::export_all_user_permissions,

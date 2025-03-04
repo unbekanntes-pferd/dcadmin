@@ -1,6 +1,6 @@
 use dco3::{
     roles::{Role, RoleList},
-    users::{UserItem, UserList},
+    users::{LastAdminUserRoom, LastAdminUserRoomList, UserItem, UserList},
 };
 use serde::Serialize;
 
@@ -169,3 +169,42 @@ impl From<UserList> for SerializedUserList {
         }
     }
 }
+
+
+#[derive(Serialize, Clone)]
+pub struct SerializedLastAdminUserRoomList {
+    pub items: Vec<SerializedLastAdminUserRoom>,
+}
+
+#[derive(Serialize, Clone)]
+#[serde(rename_all = "camelCase")]
+pub struct SerializedLastAdminUserRoom {
+    pub id: u64,
+    pub name: String,
+    pub parent_path: String,
+    pub last_admin_in_group: bool,
+    pub parent_id: Option<u64>,
+    pub last_admin_in_group_id: Option<u64>,
+}
+
+impl From<LastAdminUserRoom> for SerializedLastAdminUserRoom {
+    fn from(value: LastAdminUserRoom) -> Self {
+        SerializedLastAdminUserRoom {
+            id: value.id,
+            name: value.name,
+            parent_path: value.parent_path,
+            last_admin_in_group: value.last_admin_in_group,
+            parent_id: value.parent_id,
+            last_admin_in_group_id: value.last_admin_in_group_id,
+        }
+    }
+}
+
+impl From<LastAdminUserRoomList> for SerializedLastAdminUserRoomList {
+    fn from(value: LastAdminUserRoomList) -> Self {
+        SerializedLastAdminUserRoomList {
+            items: value.items.into_iter().map(|room| room.into()).collect(),
+        }
+    }
+}
+
