@@ -31,10 +31,9 @@ describe('Auth Store', () => {
 
   it('should set user account when setUserAccount() is called', () => {
     const mockAccount = {
-      id: 123,
+      userId: 123,
       firstName: 'Test',
       lastName: 'User',
-      userName: 'testuser',
       email: 'test@example.com',
       isConfigManager: true,
       isRoomManager: true,
@@ -51,10 +50,9 @@ describe('Auth Store', () => {
   it('should clear user account when clearUserAccount() is called', () => {
     // First set an account
     const mockAccount = {
-      id: 123,
+      userId: 123,
       firstName: 'Test',
       lastName: 'User',
-      userName: 'testuser',
       email: 'test@example.com',
       isConfigManager: true,
       isRoomManager: true,
