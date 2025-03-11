@@ -31,9 +31,9 @@
 
 <Toast />
 
-<div class="flex flex-row h-full w-full">
+<div class="flex flex-row h-full w-full overflow-hidden">
 	{#if $isLoggedIn && $userAccount}
-		<div class="w-max">
+		<div class="w-max flex-shrink-0">
 			<AppRail>
 				<AppRailAnchor href="/" selected={$page.url.pathname === '/'}>
 					<svelte:fragment slot="lead"><HomeIcon /></svelte:fragment>
@@ -69,5 +69,7 @@
 		</div>
 	{/if}
 
-	<slot />
+	<div class="flex-grow overflow-auto">
+		<slot />
+	</div>
 </div>

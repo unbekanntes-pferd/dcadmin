@@ -1,10 +1,13 @@
 use dco3::{
     roles::{Role, RoleList},
-    users::{UserItem, UserList},
+    users::{LastAdminUserRoom, LastAdminUserRoomList, UserItem, UserList},
 };
 use serde::Serialize;
 
-use crate::{models::Range, ROLE_AUDITOR, ROLE_CONFIG_MANAGER, ROLE_GROUP_MANAGER, ROLE_GUEST_USER, ROLE_ROOM_MANAGER, ROLE_USER_MANAGER};
+use crate::{
+    models::Range, ROLE_AUDITOR, ROLE_CONFIG_MANAGER, ROLE_GROUP_MANAGER, ROLE_GUEST_USER,
+    ROLE_ROOM_MANAGER, ROLE_USER_MANAGER,
+};
 
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -56,22 +59,42 @@ impl From<SerializedUserItem> for FlattenedUserItem {
             is_config_manager: value
                 .user_roles
                 .as_ref()
-                .map(|roles| roles.items.iter().any(|role| role.name == ROLE_CONFIG_MANAGER))
+                .map(|roles| {
+                    roles
+                        .items
+                        .iter()
+                        .any(|role| role.name == ROLE_CONFIG_MANAGER)
+                })
                 .unwrap_or(false),
             is_room_manager: value
                 .user_roles
                 .as_ref()
-                .map(|roles| roles.items.iter().any(|role| role.name == ROLE_ROOM_MANAGER))
+                .map(|roles| {
+                    roles
+                        .items
+                        .iter()
+                        .any(|role| role.name == ROLE_ROOM_MANAGER)
+                })
                 .unwrap_or(false),
             is_user_manager: value
                 .user_roles
                 .as_ref()
-                .map(|roles| roles.items.iter().any(|role| role.name == ROLE_USER_MANAGER))
+                .map(|roles| {
+                    roles
+                        .items
+                        .iter()
+                        .any(|role| role.name == ROLE_USER_MANAGER)
+                })
                 .unwrap_or(false),
             is_group_manager: value
                 .user_roles
                 .as_ref()
-                .map(|roles| roles.items.iter().any(|role| role.name == ROLE_GROUP_MANAGER))
+                .map(|roles| {
+                    roles
+                        .items
+                        .iter()
+                        .any(|role| role.name == ROLE_GROUP_MANAGER)
+                })
                 .unwrap_or(false),
             is_auditor: value
                 .user_roles
@@ -146,3 +169,42 @@ impl From<UserList> for SerializedUserList {
         }
     }
 }
+
+
+#[derive(Serialize, Clone)]
+pub struct SerializedLastAdminUserRoomList {
+    pub items: Vec<SerializedLastAdminUserRoom>,
+}
+
+#[derive(Serialize, Clone)]
+#[serde(rename_all = "camelCase")]
+pub struct SerializedLastAdminUserRoom {
+    pub id: u64,
+    pub name: String,
+    pub parent_path: String,
+    pub last_admin_in_group: bool,
+    pub parent_id: Option<u64>,
+    pub last_admin_in_group_id: Option<u64>,
+}
+
+impl From<LastAdminUserRoom> for SerializedLastAdminUserRoom {
+    fn from(value: LastAdminUserRoom) -> Self {
+        SerializedLastAdminUserRoom {
+            id: value.id,
+            name: value.name,
+            parent_path: value.parent_path,
+            last_admin_in_group: value.last_admin_in_group,
+            parent_id: value.parent_id,
+            last_admin_in_group_id: value.last_admin_in_group_id,
+        }
+    }
+}
+
+impl From<LastAdminUserRoomList> for SerializedLastAdminUserRoomList {
+    fn from(value: LastAdminUserRoomList) -> Self {
+        SerializedLastAdminUserRoomList {
+            items: value.items.into_iter().map(|room| room.into()).collect(),
+        }
+    }
+}
+

@@ -1,4 +1,4 @@
-import { invoke } from "@tauri-apps/api";
+import { invoke } from "@tauri-apps/api/core";
 import type { CustomerInfo } from "./models";
 
 export const getCustomerInfo = async (): Promise<CustomerInfo> => {

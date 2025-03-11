@@ -13,15 +13,12 @@ pub type SerializedNodePermissionsList = Vec<SerializedNodePermissions>;
 #[derive(PartialEq, Eq)]
 pub struct PermissionsCacheKey {
     url: String,
-    params: ListParams
+    params: ListParams,
 }
 
 impl PermissionsCacheKey {
     pub fn new(url: String, params: ListParams) -> Self {
-        Self {
-            url,
-            params
-        }
+        Self { url, params }
     }
 }
 

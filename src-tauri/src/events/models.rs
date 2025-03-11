@@ -1,24 +1,21 @@
 use chrono::{DateTime, Utc};
-use std::hash::Hash;
 use dco3::eventlog::{
     EventStatus, EventlogParams, LogEvent, LogEventList, LogOperation, LogOperationList,
 };
 use serde::{Deserialize, Serialize};
+use std::hash::Hash;
 
 use crate::models::Range;
 
 #[derive(PartialEq, Eq)]
 pub struct EventsCacheKey {
     url: String,
-    params: EventListParams
+    params: EventListParams,
 }
 
 impl EventsCacheKey {
     pub fn new(url: String, params: EventListParams) -> Self {
-        Self {
-            url,
-            params
-        }
+        Self { url, params }
     }
 }
 
@@ -81,10 +78,7 @@ impl EventListParams {
     pub fn to_string(&self) -> String {
         serde_json::to_string(self).unwrap_or_default()
     }
-    
 }
-
-
 
 impl TryFrom<EventListParams> for EventlogParams {
     type Error = String;
@@ -95,10 +89,7 @@ impl TryFrom<EventListParams> for EventlogParams {
             .map(|s| {
                 chrono::NaiveDateTime::parse_from_str(s, "%Y-%m-%dT%H:%M:%S.%fZ")
                     .map(|dt| dt.and_utc())
-                    .map_err(|e| {
-            
-                        e.to_string()
-                    })
+                    .map_err(|e| e.to_string())
             })
             .transpose()?;
 

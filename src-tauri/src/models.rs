@@ -15,7 +15,7 @@ use crate::{
     config::{log_dracoon_error, setup_cache},
     customer::SerializedCustomerInfo,
     events::{EventsCacheKey, SerializedEventList, SerializedOperationTypes},
-    permissions::{PermissionsCacheKey, SerializedNodePermissionsList},
+    permissions::{PermissionsCacheKey, SerializedNodePermissionsList}, users::SerializedLastAdminUserRoomList,
 };
 
 pub const ROLE_ROOM_MANAGER: &str = "ROOM_MANAGER";
@@ -41,10 +41,11 @@ pub struct AppState {
 }
 
 pub struct AppCache {
-    pub permissions: Cache<PermissionsCacheKey, Arc<SerializedNodePermissionsList>>,
-    pub customer: Cache<String, Arc<SerializedCustomerInfo>>,
-    pub events: Cache<EventsCacheKey, Arc<SerializedEventList>>,
-    pub operations: Cache<String, Arc<SerializedOperationTypes>>,
+    permissions: Cache<PermissionsCacheKey, Arc<SerializedNodePermissionsList>>,
+    customer: Cache<String, Arc<SerializedCustomerInfo>>,
+    events: Cache<EventsCacheKey, Arc<SerializedEventList>>,
+    operations: Cache<String, Arc<SerializedOperationTypes>>,
+    user_last_admin_rooms: Cache<String, Arc<SerializedLastAdminUserRoomList>>,
 }
 
 impl AppCache {
@@ -63,6 +64,10 @@ impl AppCache {
                 DEFAULT_MAX_CACHE_STATIC_COUNT,
                 Some(Duration::from_secs(30 * 60)),
             ),
+            user_last_admin_rooms: setup_cache(
+                DEFAULT_MAX_CACHE_ENTITY_COUNT,
+                Some(Duration::from_secs(5 * 60)),
+            ),
         }
     }
 
@@ -80,6 +85,10 @@ impl AppCache {
 
     pub fn operations(&self) -> &Cache<String, Arc<SerializedOperationTypes>> {
         &self.operations
+    }
+
+    pub fn user_last_admin_rooms(&self) -> &Cache<String, Arc<SerializedLastAdminUserRoomList>> {
+        &self.user_last_admin_rooms
     }
 }
 
@@ -293,6 +302,12 @@ impl AppState {
 
     pub fn get_operations_cache(&self) -> &Cache<String, Arc<SerializedOperationTypes>> {
         &self.cache.operations()
+    }
+
+    pub fn get_user_last_admin_rooms_cache(
+        &self,
+    ) -> &Cache<String, Arc<SerializedLastAdminUserRoomList>> {
+        &self.cache.user_last_admin_rooms()
     }
 }
 

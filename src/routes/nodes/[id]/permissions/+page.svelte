@@ -7,10 +7,10 @@
 	import type { NodePermissionsListEntry, UserPermissions } from '$lib/permissions/models';
 	import NodePermissionsView from '../../../../components/nodes/NodePermissionsView.svelte';
 	import NodeInfoView from '../../../../components/nodes/NodeInfoView.svelte';
-	import { save } from '@tauri-apps/api/dialog';
+	import { save } from '@tauri-apps/plugin-dialog';
 	import DownloadIcon from '~icons/mdi/download';
 	import Spinner from '../../../../components/Spinner.svelte';
-	import NodeBackButton from '../../../../components/nodes/NodeBackButton.svelte';
+	import BackButton from '../../../../components/BackButton.svelte';
 
 	const toastStore = getToastStore();
 	let downloading = false;
@@ -82,17 +82,17 @@
 </script>
 
 {#if userPermissions.length > 0 && nodeInfo}
-	<div class="flex flex-col ml-4 mt-4 w-4/5">
+	<div class="flex flex-col w-full p-4">
         <div class="card p-4 overflow-y-visible w-full mb-4">
             <NodeInfoView {nodeInfo} />
-            <div class="flex flex-row justify-between items-center mt-4">
+            <div class="flex flex-col sm:flex-row justify-between items-center mt-4 space-y-2 sm:space-y-0">
                 <div>
-                    <NodeBackButton full />
+                    <BackButton full />
                 </div>
-                <div class="flex flex-row justify-end items-center">
+                <div class="flex items-center">
                     <button
                         type="button"
-                        class="btn variant-filled-primary my-2 w-fit mx-2"
+                        class="btn variant-filled-primary h-10 my-2 w-full sm:w-fit sm:mx-2 sm:my-0"
                         on:click={handleDownload}
                         disabled={downloading || !userPermissions}
                     >
@@ -106,8 +106,12 @@
                 </div>
             </div>
         </div>
-		<NodePermissionsView {userPermissions} />
+		<div class="flex-1 overflow-y-auto" style="height: calc(100vh - 400px);">
+			<NodePermissionsView {userPermissions} />
+		</div>
 	</div>
 {:else}
-	<p>No permissions found</p>
+	<div class="flex justify-center items-center w-full p-4">
+		<p>No permissions found</p>
+	</div>
 {/if}

@@ -5,7 +5,7 @@ use dco3::Users;
 use models::{FlattenedUserItem, SerializedUserItem, SerializedUserList};
 use tauri::State;
 
-pub (crate) use models::SerializedRoleList;
+pub(crate) use models::{SerializedLastAdminUserRoomList, SerializedRoleList};
 
 mod models;
 
@@ -108,4 +108,36 @@ pub async fn export_users(
     tracing::info!("Exported all users to CSV in {elapsed_csv} ms");
 
     Ok(())
+}
+
+#[tauri::command]
+pub async fn get_user_last_admin_rooms(
+    user_id: u64,
+    state: State<'_, AppState>,
+) -> Result<SerializedLastAdminUserRoomList, String> {
+    let now = Instant::now();
+    let client = state.get_client().await?;
+
+    let base_url = client.get_base_url().to_string();
+    let key = format!("{base_url}{user_id}");
+
+    if let Some(last_admin_rooms) = state.get_user_last_admin_rooms_cache().get(&key).await {
+        let elapsed = now.elapsed().as_millis();
+        tracing::info!("Fetched cached last admin rooms in {elapsed} ms");
+        return Ok((*last_admin_rooms).clone());
+    }
+
+    let last_admin_rooms = client
+                .users()
+                .get_user_last_admin_rooms(user_id)
+                .await
+                .map_err(|e| {
+                    log_dracoon_error(&e, Some("Error fetching last admin rooms"));
+                    e.to_string()
+                })?;
+
+    let elapsed = now.elapsed().as_millis();
+    tracing::info!("Fetched last admin rooms in {elapsed} ms");
+
+    Ok(last_admin_rooms.into())
 }

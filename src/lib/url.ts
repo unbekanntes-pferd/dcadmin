@@ -1,4 +1,4 @@
-import { invoke } from "@tauri-apps/api";
+import { invoke } from "@tauri-apps/api/core";
 
 export const validateUrl = async (url: string): Promise<boolean> => {
     const urlRegex = /^(https?:\/\/)([\w.-]+)(\.[\w.-]+)+([\/\w\.-]*)*\/?$/;

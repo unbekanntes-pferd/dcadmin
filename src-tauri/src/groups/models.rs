@@ -1,7 +1,10 @@
 use dco3::groups::{Group, GroupList, GroupUser, GroupUserList};
 use serde::Serialize;
 
-use crate::{models::Range, users::SerializedRoleList, ROLE_AUDITOR, ROLE_CONFIG_MANAGER, ROLE_GROUP_MANAGER, ROLE_ROOM_MANAGER, ROLE_USER_MANAGER};
+use crate::{
+    models::Range, users::SerializedRoleList, ROLE_AUDITOR, ROLE_CONFIG_MANAGER,
+    ROLE_GROUP_MANAGER, ROLE_ROOM_MANAGER, ROLE_USER_MANAGER,
+};
 
 #[derive(Serialize)]
 pub struct SerializedGroupInfo {
@@ -83,22 +86,42 @@ impl From<SerializedGroup> for FlattenedSerializedGroup {
             is_config_manager: value
                 .group_roles
                 .as_ref()
-                .map(|roles| roles.items.iter().any(|role| role.name == ROLE_CONFIG_MANAGER))
+                .map(|roles| {
+                    roles
+                        .items
+                        .iter()
+                        .any(|role| role.name == ROLE_CONFIG_MANAGER)
+                })
                 .unwrap_or_default(),
             is_room_manager: value
                 .group_roles
                 .as_ref()
-                .map(|roles| roles.items.iter().any(|role| role.name == ROLE_ROOM_MANAGER))
+                .map(|roles| {
+                    roles
+                        .items
+                        .iter()
+                        .any(|role| role.name == ROLE_ROOM_MANAGER)
+                })
                 .unwrap_or_default(),
             is_user_manager: value
                 .group_roles
                 .as_ref()
-                .map(|roles| roles.items.iter().any(|role| role.name == ROLE_USER_MANAGER))
+                .map(|roles| {
+                    roles
+                        .items
+                        .iter()
+                        .any(|role| role.name == ROLE_USER_MANAGER)
+                })
                 .unwrap_or_default(),
             is_group_manager: value
                 .group_roles
                 .as_ref()
-                .map(|roles| roles.items.iter().any(|role| role.name == ROLE_GROUP_MANAGER))
+                .map(|roles| {
+                    roles
+                        .items
+                        .iter()
+                        .any(|role| role.name == ROLE_GROUP_MANAGER)
+                })
                 .unwrap_or_default(),
             is_auditor: value
                 .group_roles
@@ -159,7 +182,6 @@ impl From<GroupList> for SerializedGroupList {
     }
 }
 
-
 #[derive(Serialize)]
 pub struct SerializedGroupUserList {
     pub items: Vec<SerializedGroupUser>,
@@ -217,7 +239,11 @@ impl From<GroupUser> for SerializedGroupUser {
 impl From<GroupUserList> for SerializedGroupUserList {
     fn from(value: GroupUserList) -> Self {
         SerializedGroupUserList {
-            items: value.items.into_iter().map(SerializedGroupUser::from).collect(),
+            items: value
+                .items
+                .into_iter()
+                .map(SerializedGroupUser::from)
+                .collect(),
             range: value.range.into(),
         }
     }

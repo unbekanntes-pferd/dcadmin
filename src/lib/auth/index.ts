@@ -1,4 +1,4 @@
-import { invoke } from "@tauri-apps/api";
+import { invoke } from "@tauri-apps/api/core";
 import type { UserAccount } from "./models";
 
 export const initAuthCodeFlow = async (url: string): Promise<boolean> => {

@@ -46,13 +46,13 @@
 {/each}
 
 <div class="card p-4 w-full m-4">
-	<div class="flex flex-row justify-between items-center">
+	<div class="flex flex-col sm:flex-row justify-between items-center">
 		<div>
 			<header class="card-header">
-				<div class="my-2">
+				<div class="my-2 text-center sm:text-left">
 					<b>Welcome, {firstName}.</b>
 				</div>
-				<div class="flex flex-row">
+				<div class="flex flex-row justify-center sm:justify-start">
 					{#if isConfigManager}
 						<div use:popup={popupSettings[0]}>
 							<SettingsIcon class="text-green-300 mx-1" />
@@ -79,7 +79,7 @@
 				</div>
 			</header>
 
-			<div class="flex flex-row justify-between">
+			<div class="flex flex-row justify-center sm:justify-start">
 				<div class="p-4">
 					{#await getCustomerInfo()}
 						<p>Loading...</p>
@@ -101,11 +101,11 @@
 				</div>
 			</div>
 		</div>
-		<div>
-			<img src="/dcadmin_logo.png" alt="dcadmin logo" width="200" height="200" />
+		<div class="mt-4 sm:mt-0">
+			<img src="/dcadmin_logo.png" alt="dcadmin logo" class="w-32 h-32 sm:w-48 sm:h-48 md:w-64 md:h-64 lg:w-72 lg:h-72" />
 		</div>
 	</div>
-<footer class="card-footer text-xs text-gray-500">
+<footer class="card-footer text-xs text-gray-500 text-center sm:text-left">
 	{#await getVersion() then version}
 	dcadmin {version}
 	{:catch}

@@ -1,4 +1,4 @@
-import { invoke } from "@tauri-apps/api";
+import { invoke } from "@tauri-apps/api/core";
 import type { EventList, EventParams, OperationTypeList } from "./models";
 
 export const getEvents = async (params: EventParams): Promise<EventList> => {

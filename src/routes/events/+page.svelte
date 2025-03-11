@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { save } from '@tauri-apps/api/dialog';
+	import { save } from '@tauri-apps/plugin-dialog';
 	import { downloadEvents, getEvents, getOperationTypes } from '$lib/events';
 	import type { EventList, EventParams, OperationTypeList } from '$lib/events/models';
 	import { onMount } from 'svelte';
@@ -166,9 +166,9 @@
 						</div>
 					</header>
 					<div>
-						<div class="flex flex-row w-full">
-							<div class="flex flex-col w-1/2">
-								<div class="flex flex-col w-fit">
+						<div class="flex flex-col lg:flex-row w-full space-y-4 lg:space-y-0">
+							<div class="flex flex-col w-full lg:w-1/2 lg:pr-4">
+								<div class="flex flex-col w-full">
 									{#if operationList && operationList.operations}
 										<label for="operation-filter">Actions</label>
 										<select
@@ -183,25 +183,25 @@
 											{/each}
 										</select>
 									{/if}
-									<div class="flex flex-row my-2 w-full">
-										<div class="w-1/2">
+									<div class="flex flex-col sm:flex-row my-2 w-full space-y-2 sm:space-y-0">
+										<div class="w-full sm:w-1/2 sm:pr-2">
 											<label for="date-from">From</label>
 
 											<input
 												id="date-from"
 												type="date"
-												class="input"
+												class="input w-full"
 												bind:value={fromDateStr}
 												on:change={fetchEvents}
 											/>
 										</div>
 
-										<div class="w-1/2 ml-4">
-											<label for="date-to" class="">To</label>
+										<div class="w-full sm:w-1/2 sm:pl-2">
+											<label for="date-to">To</label>
 											<input
 												id="date-to"
 												type="date"
-												class="input"
+												class="input w-full"
 												bind:value={toDateStr}
 												on:change={fetchEvents}
 											/>
@@ -210,16 +210,18 @@
 								</div>
 							</div>
 
-							<UserSearch
-								{onUserSelection}
-								bind:resetFilter={userResetFilter}
-								bind:selectedUserId={userFilter}
-							/>
+							<div class="w-full lg:w-1/2">
+								<UserSearch
+									{onUserSelection}
+									bind:resetFilter={userResetFilter}
+									bind:selectedUserId={userFilter}
+								/>
+							</div>
 						</div>
-						<div class="flex flex-row justify-between mt-4">
+						<div class="flex flex-col sm:flex-row justify-between mt-4 space-y-2 sm:space-y-0">
 							<button
 								type="button"
-								class="btn variant-outline-warning my-2 w-24"
+								class="btn variant-outline-warning h-10 my-2 w-full sm:w-24"
 								on:click={resetFilters}
 							>
 								<span><CancelIcon /></span>
@@ -227,7 +229,7 @@
 							</button>
 							<button
 								type="button"
-								class="btn variant-filled-primary my-2 w-fit mx-2"
+								class="btn variant-filled-primary h-10 my-2 w-full sm:w-fit"
 								on:click={handleDownload}
 								disabled={downloading}
 							>
@@ -244,19 +246,21 @@
 			</svelte:fragment>
 		</AccordionItem>
 	</Accordion>
-	{#if loading}
-		<div class="flex justify-center items-center">
-			<Spinner width='w-36' />
-		</div>
-	{:else if eventList}
-		<div class="my-4">
-			<Paginator
-				bind:settings={paginationSettings}
-				on:page={onPageChange}
-				on:amount={onAmountChange}
-				controlVariant="variant-outline"
-			></Paginator>
-		</div>
-		<Events {eventList}></Events>
-	{/if}
+	<div class="my-4">
+		<Paginator
+			bind:settings={paginationSettings}
+			on:page={onPageChange}
+			on:amount={onAmountChange}
+			controlVariant="variant-outline"
+		></Paginator>
+	</div>
+	<div class="flex-1 overflow-y-auto" style="height: calc(100vh - 300px);">
+		{#if loading}
+			<div class="flex justify-center items-center">
+				<Spinner width='w-36' />
+			</div>
+		{:else if eventList}
+			<Events {eventList}></Events>
+		{/if}
+	</div>
 </div>

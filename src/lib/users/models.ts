@@ -43,3 +43,16 @@ export const roleListForGroups = [
     { label: 'Group Manager', value: 'GROUP_MANAGER' },
     { label: 'Auditor', value: 'LOG_AUDITOR' },
 ];
+
+export interface LastAdminUserRoom {
+    id: number;
+    name: string;
+    parentPath: string;
+    lastAdminInGroup: boolean;
+    parentId: number;
+    lastAdminInGroupId?: number;
+}
+
+export interface LastAdminUserRoomList {
+    items: LastAdminUserRoom[]
+}
