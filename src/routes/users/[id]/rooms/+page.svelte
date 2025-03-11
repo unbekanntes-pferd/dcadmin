@@ -1,26 +1,17 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { ToastType, type ListParams } from '$lib/models';
-	import { downloadUserPermissions, getPermissions } from '$lib/permissions';
 	import { createToastSettings } from '$lib/utils';
 	import { getToastStore } from '@skeletonlabs/skeleton';
-	import type { NodePermissionsListEntry, UserPermissions } from '$lib/permissions/models';
-	import NodePermissionsView from '../../../../components/nodes/NodePermissionsView.svelte';
-	import NodeInfoView from '../../../../components/nodes/NodeInfoView.svelte';
-	import { save } from '@tauri-apps/plugin-dialog';
-	import DownloadIcon from '~icons/mdi/download';
-	import Spinner from '../../../../components/Spinner.svelte';
-	import NodeBackButton from '../../../../components/nodes/NodeBackButton.svelte';
 	import type { LastAdminUserRoomList } from '$lib/users/models';
 	import { getLastAdminUserRooms } from '$lib/users';
-	import UserBackButton from '../../../../components/users/UserBackButton.svelte';
 	import UserLastAdminRoomsView from '../../../../components/users/UserLastAdminRoomsView.svelte';
+	import BackButton from '../../../../components/BackButton.svelte';
 
 	const toastStore = getToastStore();
-	let downloading = false;
+
 
     let lastAdminRooms: LastAdminUserRoomList | undefined = undefined;
-	const todayStr = new Date().toLocaleDateString('en-CA');
 
 	const fetchLastAdminRooms = async (
 		userId: number
@@ -51,7 +42,7 @@
         <div class="card p-4 overflow-y-visible w-full mb-4">
             <div class="flex flex-col sm:flex-row justify-between items-center mt-4 space-y-2 sm:space-y-0">
                 <div>
-                    <UserBackButton full />
+                    <BackButton full />
                 </div>
             </div>
         </div>

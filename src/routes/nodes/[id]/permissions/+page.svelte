@@ -10,7 +10,7 @@
 	import { save } from '@tauri-apps/plugin-dialog';
 	import DownloadIcon from '~icons/mdi/download';
 	import Spinner from '../../../../components/Spinner.svelte';
-	import NodeBackButton from '../../../../components/nodes/NodeBackButton.svelte';
+	import BackButton from '../../../../components/BackButton.svelte';
 
 	const toastStore = getToastStore();
 	let downloading = false;
@@ -87,7 +87,7 @@
             <NodeInfoView {nodeInfo} />
             <div class="flex flex-col sm:flex-row justify-between items-center mt-4 space-y-2 sm:space-y-0">
                 <div>
-                    <NodeBackButton full />
+                    <BackButton full />
                 </div>
                 <div class="flex items-center">
                     <button
