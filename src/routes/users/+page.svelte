@@ -5,7 +5,7 @@
 	import PermissionsIcon from '~icons/mdi/user-key';
 	import UserList from '../../components/users/UserList.svelte';
 	import { lastUserTab } from '../../stores/users';
-
+	import { userAccount } from '../../stores/auth';
 
 	let tabSet = $lastUserTab;
 
@@ -13,10 +13,13 @@
 </script>
 
 <TabGroup class="w-full">
-	<Tab bind:group={tabSet} name="permissions" value={0}>
-		<svelte:fragment slot="lead"><PermissionsIcon /></svelte:fragment>
-		<span>Permissions</span>
-	</Tab>
+	{#if $userAccount && !$userAccount.isCloud}
+		<Tab bind:group={tabSet} name="permissions" value={0}>
+			<svelte:fragment slot="lead"><PermissionsIcon /></svelte:fragment>
+			<span>Permissions</span>
+		</Tab>
+	{/if}
+
 	<Tab bind:group={tabSet} name="userlist" value={1}>
 		<svelte:fragment slot="lead"><ListIcon /></svelte:fragment>
 		<span>List</span>
