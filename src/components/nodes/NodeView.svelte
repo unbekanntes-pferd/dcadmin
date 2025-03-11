@@ -1,12 +1,11 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import type { NodeInfo } from '$lib/permissions/models';
 	import { handleNodeNavigation, toReadableSize } from '$lib/utils';
 	import { Paginator, type PaginationSettings } from '@skeletonlabs/skeleton';
 	import RoomIcon from '~icons/mdi/folder-account';
 	import UsersIcon from '~icons/mdi/users';
 	import { page } from '$app/state';
-	import NodeBackButton from './NodeBackButton.svelte';
+    import BackButton from '../BackButton.svelte';
 	import { lastNodesPage } from '../../stores/nodes';
 
 	export let nodes: NodeInfo[];
@@ -33,7 +32,7 @@
 
 <div class="flex flex-col w-full p-4 space-y-2">
 	{#if page.url.pathname !== '/nodes/0'}
-		<NodeBackButton />
+		<BackButton />
 	{/if}
 
 	<div class="my-4">

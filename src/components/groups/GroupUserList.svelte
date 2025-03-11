@@ -101,8 +101,8 @@
 </script>
 
 {#if !loading && groupInfo && groupUsers.length > 0}
-	<div class="flex flex-col mx-4 mt-4 w-full">
-		<div class="card p-4 overflow-y-visible w-full mb-4">
+	<div class="flex flex-col mx-4 mt-4 max-w-full">
+		<div class="card p-4 w-full mb-4">
 			<header class="card-header flex flex-col w-full items-center mb-2 pt-0">
 				<div class="mb-2 flex flex-row">
 					<span class="mr-2">
@@ -136,7 +136,7 @@
 			</div>
 		</div>
 
-		<div>
+		<div class="w-full">
 			<div class="my-4">
 				<Paginator
 					bind:settings={paginationSettings}
@@ -146,8 +146,8 @@
 				></Paginator>
 			</div>
 
-			<div class="flex-1 overflow-y-auto" style="height: 770px;">
-				<div class="table-container h-full overflow-y-auto">
+			<div class="max-w-full overflow-x-auto">
+				<div class="table-container">
 					<table class="table table-hover">
 						<thead>
 							<tr>
