@@ -6,7 +6,7 @@
 	$: rooms = roomList.items;
 
 	import UsersIcon from '~icons/mdi/users';
-	import UserBackButton from './UserBackButton.svelte';
+	import BackButton from '../BackButton.svelte';
 </script>
 
 {#if rooms.length > 0}
@@ -29,13 +29,12 @@
 								<div>{room.name}</div>
 							</td>
 							<td>
-								<div class="md:hidden text-xs mt-1 text-surface-400">
-									<span class="font-semibold">Path:</span>
+								<div class="text-xs mt-1 text-surface-400">
 									{room.parentPath}
 								</div>
 							</td>
 							<td>
-								<div class="sm:hidden text-xs mt-1 text-surface-400">
+								<div class="text-xs mt-1 text-surface-400">
 									<button on:click={() => handleNodeNavigation(room.id, true)}>
 										<span><UsersIcon /></span>
 									</button>
@@ -46,7 +45,8 @@
 								<div class="text-xs mt-1 text-surface-400">
                                     {#if room.parentId}
 									<button on:click={() => handleNodeNavigation(room.parentId, true)}>
-										<span><UsersIcon /></span>
+										<span
+										><UsersIcon /></span>
 									</button>
                                     {:else}
                                     -
@@ -54,8 +54,7 @@
 								</div>
 							</td>
 							<td>
-								<div class="sm:hidden text-xs mt-1 text-surface-400">
-									<span class="font-semibold">Encrypted:</span>
+								<div class="text-xs mt-1 text-surface-400">
 									{room.lastAdminInGroup ? '✅️' : '❌'}
 								</div>
 							</td>
@@ -66,7 +65,7 @@
 		</div>
 	</div>
 {:else}
-	<UserBackButton />
+	<BackButton />
 	<p>No rooms found</p>
 {/if}
 
