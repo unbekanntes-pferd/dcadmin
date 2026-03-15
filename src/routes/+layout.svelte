@@ -14,6 +14,7 @@
 	import GroupIcon from '~icons/mdi/account-group';
 	import { goto } from '$app/navigation';
 	import { initializeStores, Toast } from '@skeletonlabs/skeleton';
+	import { cloudCustomerFeatureRestrictionsEnabled } from '$lib/utils';
 
 	initializeStores();
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
@@ -39,7 +40,7 @@
 					<svelte:fragment slot="lead"><HomeIcon /></svelte:fragment>
 					Home
 				</AppRailAnchor>
-				{#if !$userAccount.isCloud}
+				{#if !$userAccount.isCloud || !cloudCustomerFeatureRestrictionsEnabled}
 					<AppRailAnchor href="/events" selected={$page.url.pathname === '/events'}>
 						<svelte:fragment slot="lead"><EventsIcon /></svelte:fragment>
 						<div class="flex flex-col text-xs">Events</div>
@@ -53,7 +54,7 @@
 						<svelte:fragment slot="lead"><GroupIcon /></svelte:fragment>
 						<div class="flex flex-col text-xs">Groups</div>
 					</AppRailAnchor>
-					{#if !$userAccount.isCloud}
+					{#if !$userAccount.isCloud || !cloudCustomerFeatureRestrictionsEnabled}
 					<AppRailAnchor href="/nodes/0" selected={$page.url.pathname.startsWith('/nodes')}>
 						<svelte:fragment slot="lead"><NodesIcon /></svelte:fragment>
 						<div class="flex flex-col text-xs">Nodes</div>

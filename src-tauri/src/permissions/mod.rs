@@ -2,11 +2,17 @@ mod models;
 use std::{sync::Arc, time::Instant};
 
 use crate::{config::log_dracoon_error, models::ListParams, AppState};
-use dco3::{eventlog::AuditNodesFilter, Eventlog, ListAllParams, Users};
+use dco3::{
+    auth::Connected,
+    eventlog::{AuditNodeList, AuditNodesFilter},
+    Dracoon, Eventlog, ListAllParams, Users,
+};
 use models::{AuditNodeListWrapper, FlattenedNodePermissions};
 use tauri::State;
 
 pub use models::{PermissionsCacheKey, SerializedNodePermissionsList};
+
+const DEFAULT_PERMISSIONS_BATCH_SIZE: usize = 500;
 
 #[tauri::command]
 #[allow(deprecated)]
@@ -26,14 +32,7 @@ pub async fn get_permissions(
         return Ok((*permissions).clone());
     }
 
-    let permissions = client
-        .eventlog()
-        .get_node_permissions(params.try_into()?)
-        .await
-        .map_err(|e| {
-            log_dracoon_error(&e, Some("Error fetching permissions"));
-            e.to_string()
-        })?;
+    let permissions = get_all_node_permissions(&client, params).await?;
 
     let wrapped_permissions: AuditNodeListWrapper = permissions.into();
     let serializable_permissions: SerializedNodePermissionsList = wrapped_permissions.into();
@@ -67,14 +66,7 @@ pub async fn export_user_permissions(
     {
         (*permissions).clone()
     } else {
-        let fetched_permissions = client
-            .eventlog()
-            .get_node_permissions(params.try_into()?)
-            .await
-            .map_err(|e| {
-                log_dracoon_error(&e, Some("Error fetching permissions"));
-                e.to_string()
-            })?;
+        let fetched_permissions = get_all_node_permissions(&client, params).await?;
 
         let wrapped_permissions: AuditNodeListWrapper = fetched_permissions.into();
         let serializable_permissions: SerializedNodePermissionsList = wrapped_permissions.into();
@@ -118,9 +110,8 @@ pub async fn export_all_user_permissions(
     state: State<'_, AppState>,
 ) -> Result<(), String> {
     let now = Instant::now();
-    let mut users = state
-        .get_client()
-        .await?
+    let client = state.get_client().await?;
+    let mut users = client
         .users()
         .get_users(None, None, None)
         .await
@@ -132,9 +123,7 @@ pub async fn export_all_user_permissions(
     if users.range.total > 500 {
         for offset in (500..users.range.total).step_by(500) {
             let params = ListAllParams::builder().with_offset(offset).build();
-            let new_users = state
-                .get_client()
-                .await?
+            let new_users = client
                 .users()
                 .get_users(Some(params), None, None)
                 .await
@@ -159,19 +148,7 @@ pub async fn export_all_user_permissions(
     let mut node_permissions = Vec::new();
 
     for user_id in user_ids {
-        let user_filter = AuditNodesFilter::user_id_equals(user_id);
-        let params = ListAllParams::builder().with_filter(user_filter).build();
-
-        let permissions = state
-            .get_client()
-            .await?
-            .eventlog()
-            .get_node_permissions(params)
-            .await
-            .map_err(|e| {
-                log_dracoon_error(&e, Some("Error fetching permissions"));
-                e.to_string()
-            })?;
+        let permissions = get_all_node_permissions_by_user(&client, user_id).await?;
 
         node_permissions.extend(permissions);
     }
@@ -206,4 +183,90 @@ pub async fn export_all_user_permissions(
     tracing::info!("Exported all permissions in {elapsed_exported_permissions} ms");
 
     Ok(())
+}
+
+async fn get_all_node_permissions(
+    client: &Dracoon<Connected>,
+    params: ListParams,
+) -> Result<AuditNodeList, String> {
+    let mut permissions = client
+        .eventlog()
+        .get_node_permissions(params.clone().try_into()?)
+        .await
+        .map_err(|e| {
+            log_dracoon_error(&e, Some("Error fetching permissions"));
+            e.to_string()
+        })?;
+
+    let mut offset = params.offset.unwrap_or_default() + DEFAULT_PERMISSIONS_BATCH_SIZE as u64;
+    let mut fetched_count = permissions.len();
+
+    while fetched_count >= DEFAULT_PERMISSIONS_BATCH_SIZE {
+        tracing::debug!("Fetching permissions with offset {offset}");
+
+        let page_params = ListParams {
+            offset: Some(offset),
+            ..params.clone()
+        };
+
+        let next_permissions = client
+            .eventlog()
+            .get_node_permissions(page_params.try_into()?)
+            .await
+            .map_err(|e| {
+                log_dracoon_error(&e, Some("Error fetching permissions"));
+                e.to_string()
+            })?;
+
+        fetched_count = next_permissions.len();
+        permissions.extend(next_permissions);
+        offset += DEFAULT_PERMISSIONS_BATCH_SIZE as u64;
+    }
+
+    Ok(permissions)
+}
+
+async fn get_all_node_permissions_by_user(
+    client: &Dracoon<Connected>,
+    user_id: u64,
+) -> Result<AuditNodeList, String> {
+    let mut permissions = client
+        .eventlog()
+        .get_node_permissions(
+            ListAllParams::builder()
+                .with_filter(AuditNodesFilter::user_id_equals(user_id))
+                .build(),
+        )
+        .await
+        .map_err(|e| {
+            log_dracoon_error(&e, Some("Error fetching permissions"));
+            e.to_string()
+        })?;
+
+    let mut offset = DEFAULT_PERMISSIONS_BATCH_SIZE as u64;
+    let mut fetched_count = permissions.len();
+
+    while fetched_count >= DEFAULT_PERMISSIONS_BATCH_SIZE {
+        tracing::debug!("Fetching permissions for user {user_id} with offset {offset}");
+
+        let next_permissions = client
+            .eventlog()
+            .get_node_permissions(
+                ListAllParams::builder()
+                    .with_filter(AuditNodesFilter::user_id_equals(user_id))
+                    .with_offset(offset)
+                    .build(),
+            )
+            .await
+            .map_err(|e| {
+                log_dracoon_error(&e, Some("Error fetching permissions"));
+                e.to_string()
+            })?;
+
+        fetched_count = next_permissions.len();
+        permissions.extend(next_permissions);
+        offset += DEFAULT_PERMISSIONS_BATCH_SIZE as u64;
+    }
+
+    Ok(permissions)
 }
