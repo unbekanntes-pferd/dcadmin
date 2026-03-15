@@ -2,6 +2,9 @@ import { goto } from "$app/navigation";
 import type { ToastType } from "$lib/models";
 import type { ToastSettings } from "@skeletonlabs/skeleton";
 
+// Flip this to `true` to restore the legacy cloud-customer feature restrictions.
+export const cloudCustomerFeatureRestrictionsEnabled = false;
+
 export const toReadableSize = (size: number): string => {
     const units = ["B", "KB", "MB", "GB", "TB", "PB"];
     if (size === 0) {
@@ -70,4 +73,3 @@ export const handleNodeNavigation = async (id: number, permissions?: boolean) =>
 export const handleUserNavigation = async (id: number) => {
     await goto(`/users/${id}/rooms`);
 };
-

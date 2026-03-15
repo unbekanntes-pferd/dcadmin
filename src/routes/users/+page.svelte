@@ -6,6 +6,7 @@
 	import UserList from '../../components/users/UserList.svelte';
 	import { lastUserTab } from '../../stores/users';
 	import { userAccount } from '../../stores/auth';
+	import { cloudCustomerFeatureRestrictionsEnabled } from '$lib/utils';
 
 	let tabSet = $lastUserTab;
 
@@ -13,7 +14,7 @@
 </script>
 
 <TabGroup class="w-full">
-	{#if $userAccount && !$userAccount.isCloud}
+	{#if $userAccount && (!$userAccount.isCloud || !cloudCustomerFeatureRestrictionsEnabled)}
 		<Tab bind:group={tabSet} name="permissions" value={0}>
 			<svelte:fragment slot="lead"><PermissionsIcon /></svelte:fragment>
 			<span>Permissions</span>
