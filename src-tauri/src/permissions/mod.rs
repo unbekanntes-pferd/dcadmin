@@ -2,7 +2,11 @@ mod models;
 use std::{sync::Arc, time::Instant};
 
 use crate::{config::log_dracoon_error, models::ListParams, AppState};
-use dco3::{auth::Connected, eventlog::AuditNodeList, Dracoon, Eventlog, ListAllParams, Users};
+use dco3::{
+    auth::Connected,
+    eventlog::{AuditNodeList, AuditNodesFilter},
+    Dracoon, Eventlog, ListAllParams, Users,
+};
 use models::{AuditNodeListWrapper, FlattenedNodePermissions};
 use tauri::State;
 
@@ -144,11 +148,7 @@ pub async fn export_all_user_permissions(
     let mut node_permissions = Vec::new();
 
     for user_id in user_ids {
-        let params = ListParams {
-            filter: Some(format!("userId:eq:{user_id}")),
-            ..Default::default()
-        };
-        let permissions = get_all_node_permissions(&client, params).await?;
+        let permissions = get_all_node_permissions_by_user(&client, user_id).await?;
 
         node_permissions.extend(permissions);
     }
@@ -212,6 +212,51 @@ async fn get_all_node_permissions(
         let next_permissions = client
             .eventlog()
             .get_node_permissions(page_params.try_into()?)
+            .await
+            .map_err(|e| {
+                log_dracoon_error(&e, Some("Error fetching permissions"));
+                e.to_string()
+            })?;
+
+        fetched_count = next_permissions.len();
+        permissions.extend(next_permissions);
+        offset += DEFAULT_PERMISSIONS_BATCH_SIZE as u64;
+    }
+
+    Ok(permissions)
+}
+
+async fn get_all_node_permissions_by_user(
+    client: &Dracoon<Connected>,
+    user_id: u64,
+) -> Result<AuditNodeList, String> {
+    let mut permissions = client
+        .eventlog()
+        .get_node_permissions(
+            ListAllParams::builder()
+                .with_filter(AuditNodesFilter::user_id_equals(user_id))
+                .build(),
+        )
+        .await
+        .map_err(|e| {
+            log_dracoon_error(&e, Some("Error fetching permissions"));
+            e.to_string()
+        })?;
+
+    let mut offset = DEFAULT_PERMISSIONS_BATCH_SIZE as u64;
+    let mut fetched_count = permissions.len();
+
+    while fetched_count >= DEFAULT_PERMISSIONS_BATCH_SIZE {
+        tracing::debug!("Fetching permissions for user {user_id} with offset {offset}");
+
+        let next_permissions = client
+            .eventlog()
+            .get_node_permissions(
+                ListAllParams::builder()
+                    .with_filter(AuditNodesFilter::user_id_equals(user_id))
+                    .with_offset(offset)
+                    .build(),
+            )
             .await
             .map_err(|e| {
                 log_dracoon_error(&e, Some("Error fetching permissions"));
